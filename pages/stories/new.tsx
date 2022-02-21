@@ -3,10 +3,13 @@ import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import Router from 'next/router'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import CancelButton from '../../components/atoms/CancelButton'
-import Input from '../../components/atoms/Form/Input'
-import TextArea from '../../components/atoms/Form/TextArea'
-import SubmitButton from '../../components/atoms/SubmitButton'
+import {
+  CancelButton,
+  FieldSet,
+  Input,
+  SubmitButton,
+  TextArea,
+} from '../../components/atoms/Form'
 import Layout from '../../components/templates/Layout'
 import { db } from '../../firebase/clientApp'
 import useUser from '../../hooks/useUser'
@@ -43,9 +46,6 @@ const NewStory = () => {
       content: page,
     }
 
-    console.log(storyInfo)
-    console.log(pageData)
-
     try {
       const docRef = await addDoc(collection(db, 'stories'), {
         ...storyInfo,
@@ -67,6 +67,11 @@ const NewStory = () => {
     }
   }
 
+  const notificationMethods = [
+    { value: 'public', title: '公開（閲覧制限なし）' },
+    { value: 'list', title: 'Twitterリスト' },
+    { value: 'password', title: 'パスワード' },
+  ]
   return (
     <Layout title="新しい小説を書く">
       <form
@@ -175,34 +180,55 @@ const NewStory = () => {
               </p>
             </div>
             <div className="mt-6">
-              <fieldset>
-                <legend className="text-base font-medium text-gray-900">
-                  閲覧制限
-                </legend>
-                <div className="mt-4 space-y-4">
-                  <div className="relative flex items-start">
-                    <div className="flex h-5 items-center">
+              <FieldSet title="公開範囲">
+                <div className="space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10">
+                  {notificationMethods.map((notificationMethod) => (
+                    <div
+                      key={notificationMethod.value}
+                      className="flex items-center"
+                    >
                       <input
-                        id="restriction"
-                        {...register('restriction')}
-                        type="checkbox"
-                        className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                        id={notificationMethod.value}
+                        value={notificationMethod.value}
+                        {...register('scope')}
+                        type="radio"
+                        defaultChecked={notificationMethod.value === 'public'}
+                        className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                       />
-                    </div>
-                    <div className="ml-3 text-sm">
                       <label
-                        htmlFor="comments"
-                        className="font-medium text-gray-700"
+                        htmlFor={notificationMethod.value}
+                        className="ml-3 block text-sm font-medium text-gray-700"
                       >
-                        R-18
+                        {notificationMethod.title}
                       </label>
-                      <p className="text-gray-500">
-                        閲覧制限が必要な場合はチェックしてください。
-                      </p>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              </fieldset>
+              </FieldSet>
+              <p className="mt-2 ml-6 text-sm text-gray-500">
+                公開範囲を選択してください。
+              </p>
+              <FieldSet title="閲覧制限">
+                <div className="flex h-5 items-center">
+                  <input
+                    id="restriction"
+                    {...register('restriction')}
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  />
+                </div>
+                <div className="ml-3 text-sm">
+                  <label
+                    htmlFor="comments"
+                    className="font-medium text-gray-700"
+                  >
+                    R-18
+                  </label>
+                  <p className="text-gray-500">
+                    閲覧制限が必要な場合はチェックしてください。
+                  </p>
+                </div>
+              </FieldSet>
             </div>
           </div>
           <div className="pt-8">
