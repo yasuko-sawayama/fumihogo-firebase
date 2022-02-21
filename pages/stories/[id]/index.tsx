@@ -11,12 +11,13 @@ type StoryProps = {
     description?: string
     restriction?: boolean
     timestamp?: Date
+    scope: string
   }
   pages: [{ content: string }]
 }
 
 const Story = ({
-  story: { title, description, restriction, timestamp },
+  story: { title, description, restriction, timestamp, scope },
   pages,
 }: StoryProps) => (
   <Layout title={title}>
@@ -26,6 +27,8 @@ const Story = ({
       <p>{restriction && 'R-18'}</p>
       <p>{timestamp}</p>
       <p>{JSON.stringify(pages)}</p>
+      <p>公開範囲</p>
+      <p>{scope}</p>
     </header>
   </Layout>
 )
@@ -48,18 +51,18 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   if (!context?.params?.id) {
-    return {
-      props: {},
-    }
+    return null
   }
 
   const docSnap = await getDoc(
     doc(client, 'stories', context.params.id.toString())
   )
 
+  const docData = docSnap.data()
+
   if (docSnap.exists()) {
     const story = {
-      ...docSnap.data(),
+      ...docData,
       timestamp: getTimestampString(docSnap),
     }
 
@@ -67,10 +70,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
       collection(client, 'stories', docSnap.id, 'pages')
     )
 
-    const pages = pageDocs.docs.map((doc) => ({
-      ...doc.data(),
-      timestamp: getTimestampString(doc),
-    }))
+    // 公開範囲がpublicの時だけページ内容を取得
+    const pages =
+      docData?.scope === 'public'
+        ? pageDocs.docs.map((doc) => ({
+            ...doc.data(),
+            timestamp: getTimestampString(doc),
+          }))
+        : {}
 
     return {
       props: {
@@ -79,9 +86,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       },
       revalidate: 10,
     }
-  } else {
-    return {
-      props: {},
-    }
   }
+
+  return null
 }

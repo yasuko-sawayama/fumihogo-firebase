@@ -69,6 +69,7 @@ const NewStory = () => {
 
   const notificationMethods = [
     { value: 'public', title: '公開（閲覧制限なし）' },
+    { value: 'login', title: 'ログイン' },
     { value: 'list', title: 'Twitterリスト' },
     { value: 'password', title: 'パスワード' },
   ]

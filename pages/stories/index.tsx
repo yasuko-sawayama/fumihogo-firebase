@@ -6,6 +6,7 @@ type Story = {
   id: string
   title: string
   timestamp: string
+  scope: 'public' | 'list' | 'password'
 }
 
 type Props = {
@@ -18,7 +19,9 @@ const StoriesIndex = ({ stories }: Props) => (
       {stories.map((story) => (
         <li key={story.id}>
           <Link href={`/stories/${story.id}`}>
-            <a>{story.title}</a>
+            <a>
+              {story.title}（{story.scope}）
+            </a>
           </Link>
         </li>
       ))}
