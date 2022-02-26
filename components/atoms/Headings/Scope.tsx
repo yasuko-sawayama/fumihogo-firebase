@@ -14,7 +14,7 @@ type Props = {
 
 const Scope = ({ scope }: Props) => {
   return (
-    <div className="mt-2 flex items-center text-sm text-gray-500">
+    <div className="mt-2 flex items-center text-xs text-gray-500">
       {scope === 'public' ? (
         <LockOpenIcon
           className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400"
