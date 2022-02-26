@@ -1,23 +1,27 @@
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
-import { GetStaticPaths, GetStaticProps } from 'next/types'
+import {
+  collection,
+  doc,
+  DocumentReference,
+  getDoc,
+  getDocs,
+} from 'firebase/firestore'
+import {
+  GetStaticPaths,
+  GetStaticPropsContext,
+  GetStaticPropsResult,
+} from 'next/types'
+import { storiesCol } from '../../../components/models/index'
 import Layout from '../../../components/templates/Layout'
 import StoryTemplate from '../../../components/templates/StoryTemplate'
 import { db as client } from '../../../firebase/clientApp'
 import usePage from '../../../hooks/usePage'
-import { Scope } from '../../../types'
+import { Story } from '../../../types'
+import { PageData } from '../../../types/index'
 import { getTimestampString } from '../../../utils/common'
-import db from '../../../utils/db'
 
 type StoryProps = {
-  story: {
-    id: string
-    title: string
-    description?: string
-    restriction?: boolean
-    timestamp?: Date
-    scope: Scope
-  }
-  pages: [{ content: string }]
+  story: Story
+  pages: PageData[] | null
 }
 
 const Story = ({ story, story: { id, scope }, pages }: StoryProps) => {
@@ -27,8 +31,8 @@ const Story = ({ story, story: { id, scope }, pages }: StoryProps) => {
     <Layout>
       <StoryTemplate
         story={story}
-        page={scope === 'public' ? pages[0] : conditionalPage}
-      ></StoryTemplate>
+        page={scope === 'public' ? pages && pages[0] : conditionalPage}
+      />
     </Layout>
   )
 }
@@ -36,7 +40,8 @@ const Story = ({ story, story: { id, scope }, pages }: StoryProps) => {
 export default Story
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const stories = await db.collection('stories').get()
+  const stories = await getDocs(storiesCol)
+
   const paths = stories.docs.map((story) => ({
     params: {
       id: story.id,
@@ -49,45 +54,46 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  if (!context?.params?.id) {
-    return null
-  }
+type PageParams = {
+  id: string
+}
 
+export const getStaticProps = async (
+  context: GetStaticPropsContext<PageParams>
+): Promise<GetStaticPropsResult<StoryProps>> => {
   const docSnap = await getDoc(
-    doc(client, 'stories', context.params.id.toString())
+    doc(
+      client,
+      'stories',
+      context?.params?.id.toString() || 'xxx'
+    ) as DocumentReference<Story>
   )
 
-  const docData = docSnap.data()
+  const docData = docSnap.data()!
 
-  if (docSnap.exists()) {
-    const story = {
-      id: docSnap.id,
-      ...docData,
-      timestamp: getTimestampString(docSnap),
-    }
-
-    const pageDocs = await getDocs(
-      collection(client, 'stories', docSnap.id, 'pages')
-    )
-
-    // 公開範囲がpublicの時だけページ内容を取得
-    const pages =
-      docData?.scope === 'public'
-        ? pageDocs.docs.map((doc) => ({
-            ...doc.data(),
-            timestamp: getTimestampString(doc),
-          }))
-        : {}
-
-    return {
-      props: {
-        story,
-        pages,
-      },
-      revalidate: 10,
-    }
+  const story = {
+    ...docData,
+    id: docSnap.id,
+    timestamp: getTimestampString(docSnap),
   }
 
-  return null
+  const pageRef = collection(storiesCol, docSnap.id, 'pages')
+  const pageDocs = await getDocs(pageRef)
+
+  // 公開範囲がpublicの時だけページ内容を取得
+  const pages =
+    docData?.scope === 'public'
+      ? pageDocs.docs.map((doc) => ({
+          ...doc.data(),
+          timestamp: getTimestampString(doc),
+        }))
+      : null
+
+  return {
+    props: {
+      story,
+      pages,
+    },
+    revalidate: 10,
+  }
 }

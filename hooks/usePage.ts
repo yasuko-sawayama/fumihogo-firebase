@@ -42,5 +42,5 @@ export default function usePage(
     }
   }, [user, scope])
 
-  return page
+  return page!
 }

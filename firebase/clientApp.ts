@@ -1,5 +1,11 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore } from 'firebase/firestore'
+import {
+  collection,
+  CollectionReference,
+  connectFirestoreEmulator,
+  DocumentData,
+  getFirestore,
+} from 'firebase/firestore'
 /* import 'firebase/auth'
 import 'firebase/firestore' */
 
@@ -20,3 +26,25 @@ const firebase = initializeApp(clientCredentials)
 export default firebase
 
 export const db = getFirestore()
+
+if (
+  process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === 'true' ||
+  process.env.NODE_ENV === 'test'
+) {
+  console.log('setup to connect local firebase emulator suite')
+  try {
+    const config = require('./firebase.json')
+    connectFirestoreEmulator(
+      db,
+      config.emulators.firestore.host,
+      config.emulators.firestore.port
+    )
+  } catch {
+    // do nothing
+  }
+}
+
+// This is just a helper to add the type to the db responses
+export const createCollection = <T = DocumentData>(collectionName: string) => {
+  return collection(db, collectionName) as CollectionReference<T>
+}

@@ -1,8 +1,10 @@
+import { getDocs } from 'firebase/firestore'
 import Link from 'next/link'
 import { GetStaticProps } from 'next/types'
+import { storiesCol } from '../../components/models/index'
 import Layout from '../../components/templates/Layout'
 import { Story } from '../../types'
-import db from '../../utils/db'
+import { getTimestampString } from '../../utils/common'
 
 type Props = {
   stories: Story[]
@@ -27,12 +29,12 @@ const StoriesIndex = ({ stories }: Props) => (
 export default StoriesIndex
 
 export const getStaticProps: GetStaticProps = async () => {
-  const res = await db.collection('stories').get()
+  const res = await getDocs(storiesCol)
 
   const stories = res.docs.map((story) => ({
-    id: story.id,
     ...story.data(),
-    timestamp: story.data()?.timestamp?.toDate()?.toLocaleString('ja-JP') || '',
+    id: story.id,
+    timestamp: getTimestampString(story),
   }))
 
   return {
