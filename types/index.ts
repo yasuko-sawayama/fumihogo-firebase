@@ -8,6 +8,8 @@ export type Scope = 'public' | 'login' | 'list' | 'password'
 export type Story = {
   id: string
   title: string
-  timestamp: string
+  description?: string
+  timestamp?: Date
   scope: Scope
+  restriction: Boolean
 }
