@@ -1,13 +1,8 @@
 import Link from 'next/link'
 import { GetStaticProps } from 'next/types'
 import Layout from '../../components/templates/Layout'
+import { Story } from '../../types'
 import db from '../../utils/db'
-type Story = {
-  id: string
-  title: string
-  timestamp: string
-  scope: 'public' | 'list' | 'password'
-}
 
 type Props = {
   stories: Story[]
