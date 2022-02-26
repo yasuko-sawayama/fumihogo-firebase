@@ -1,6 +1,6 @@
-import { getAuth, TwitterAuthProvider } from 'firebase/auth'
+import { TwitterAuthProvider } from 'firebase/auth'
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
-import firebase from '../../firebase/clientApp'
+import { auth } from '../../firebase/clientApp'
 import useUser from '../../hooks/useUser'
 
 // Configure FirebaseUI.
@@ -9,26 +9,28 @@ const uiConfig = {
   signInSuccessUrl: '/',
   // GitHub as the only included Auth Provider.
   // You could add and configure more here!
-  signInOptions: [{
-    provider: TwitterAuthProvider.PROVIDER_ID,
-    fullLabel: 'Twitterでログインする'
-    }
+  signInOptions: [
+    {
+      provider: TwitterAuthProvider.PROVIDER_ID,
+      fullLabel: 'Twitterでログインする',
+    },
   ],
 }
 
 function SignInScreen() {
-  const [user, loading] = useUser({ redirectTo: "/", redirectIfFound: true })
-    return (
-    <div className='flex min-h-screen flex-col items-center justify-center py-2'>
-      {!user && <>
-        <h1 className="text-3xl font-bold leading-tight text-gray-900 mb-3">Login</h1>
-        <p className='mb-8'>ログインしてください</p>
-      </>}
+  const [user, loading] = useUser({ redirectTo: '/', redirectIfFound: true })
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center py-2">
+      {!user && (
+        <>
+          <h1 className="mb-3 text-3xl font-bold leading-tight text-gray-900">
+            Login
+          </h1>
+          <p className="mb-8">ログインしてください</p>
+        </>
+      )}
 
-      <StyledFirebaseAuth
-        uiConfig={uiConfig}
-        firebaseAuth={getAuth(firebase)}
-      />
+      <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
     </div>
   )
 }

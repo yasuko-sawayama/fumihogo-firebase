@@ -18,7 +18,6 @@ export default function Layout({ title, children }: Props) {
 
       <div className="min-h-full">
         <Nav />
-
         <div className="py-10">
           <div className="lg:flex lg:items-center lg:justify-between">
             <div className="min-w-0 flex-1">

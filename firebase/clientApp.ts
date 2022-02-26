@@ -1,4 +1,5 @@
 import { initializeApp } from 'firebase/app'
+import { connectAuthEmulator, getAuth } from 'firebase/auth'
 import {
   collection,
   CollectionReference,
@@ -26,6 +27,7 @@ const firebase = initializeApp(clientCredentials)
 export default firebase
 
 export const db = getFirestore()
+export const auth = getAuth()
 
 if (
   process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === 'true' ||
@@ -34,6 +36,7 @@ if (
   console.log('setup to connect local firebase emulator suite')
   try {
     const config = require('./firebase.json')
+    connectAuthEmulator(auth, config.emulators.auth.port)
     connectFirestoreEmulator(
       db,
       config.emulators.firestore.host,
