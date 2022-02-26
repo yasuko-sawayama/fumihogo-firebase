@@ -15,6 +15,7 @@ import Layout from '../../../components/templates/Layout'
 import StoryTemplate from '../../../components/templates/StoryTemplate'
 import { db as client } from '../../../firebase/clientApp'
 import usePage from '../../../hooks/usePage'
+import useUser from '../../../hooks/useUser'
 import { Story } from '../../../types'
 import { PageData } from '../../../types/index'
 import { getTimestampString } from '../../../utils/common'
@@ -25,6 +26,7 @@ type StoryProps = {
 }
 
 const Story = ({ story, story: { id, scope }, pages }: StoryProps) => {
+  const [user] = useUser({ redirectTo: '/auth' })
   const conditionalPage = usePage(id, 1, scope)
 
   return (

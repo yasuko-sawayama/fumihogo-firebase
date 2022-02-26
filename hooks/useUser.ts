@@ -1,18 +1,20 @@
-import { getAuth } from 'firebase/auth';
-import Router from "next/router";
-import { useEffect } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import firebase from '../firebase/clientApp';
+import Router from 'next/router'
+import { useEffect } from 'react'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../firebase/clientApp'
+import { User } from '../types'
 
 type Props = {
-  redirectTo?: string,
+  redirectTo?: string
   redirectIfFound?: boolean
 }
+
 export default function useUser({
-  redirectTo ="",
-  redirectIfFound =false,
+  redirectTo = '',
+  redirectIfFound = false,
 }: Props = {}) {
-  const [user, loading, error] = useAuthState(getAuth(firebase))
+  const [authUser, loading, error] = useAuthState(auth)
+  const user = authUser as User
 
   useEffect(() => {
     // if no redirect needed, just return (example: already on /dashboard)
@@ -20,16 +22,16 @@ export default function useUser({
     if (!redirectTo || loading) {
       return
     }
- 
+
     if (
       // If redirectTo is set, redirect if the user was not found.
       (redirectTo && !redirectIfFound && !user) ||
       // If redirectIfFound is also set, redirect if the user was found
       (redirectIfFound && user)
     ) {
-      Router.push(redirectTo);
+      Router.push(redirectTo)
     }
-  }, [user, loading, redirectIfFound, redirectTo]);
+  }, [user, loading, redirectIfFound, redirectTo])
 
   return [user, loading, error]
 }

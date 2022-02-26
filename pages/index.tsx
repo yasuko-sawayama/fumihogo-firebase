@@ -26,10 +26,7 @@ const Home: NextPage = () => {
 
         <div className="mt-6 flex max-w-4xl flex-wrap items-center justify-around sm:w-full">
           <Link href="/stories">
-            <a
-              href="/stories"
-              className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600"
-            >
+            <a className="mt-6 w-96 rounded-xl border p-6 text-left hover:text-blue-600 focus:text-blue-600">
               <h3 className="text-2xl font-bold">一覧 &rarr;</h3>
               <p className="mt-4 text-xl">
                 Find in-depth information about Next.js features and API.

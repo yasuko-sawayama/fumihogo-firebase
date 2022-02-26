@@ -1,10 +1,8 @@
-import { getAuth, signOut } from 'firebase/auth';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import firebase from '../firebase/clientApp';
-import useUser from '../hooks/useUser';
-
-const auth = getAuth(firebase)
+import { signOut } from 'firebase/auth'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { auth } from '../firebase/clientApp'
+import useUser from '../hooks/useUser'
 
 const SignOut = () => {
   const router = useRouter()
@@ -21,8 +19,8 @@ const SignOut = () => {
       })
   }
 
-  const [_curentuser] = useUser({ redirectTo: "/auth"})
-  
+  const [_curentuser] = useUser({ redirectTo: '/auth' })
+
   return (
     <div className="mt-40 text-center">
       <svg

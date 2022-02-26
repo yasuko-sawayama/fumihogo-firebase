@@ -1,24 +1,27 @@
-import { TwitterAuthProvider } from 'firebase/auth'
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth'
+import { signInWithRedirect, TwitterAuthProvider } from 'firebase/auth'
+import Image from 'next/image'
 import { auth } from '../../firebase/clientApp'
 import useUser from '../../hooks/useUser'
-
-// Configure FirebaseUI.
-const uiConfig = {
-  // Redirect to / after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-  signInSuccessUrl: '/',
-  // GitHub as the only included Auth Provider.
-  // You could add and configure more here!
-  signInOptions: [
-    {
-      provider: TwitterAuthProvider.PROVIDER_ID,
-      fullLabel: 'Twitterでログインする',
-    },
-  ],
-}
+import Spinner from '../atoms/Spinner'
 
 function SignInScreen() {
   const [user, loading] = useUser({ redirectTo: '/', redirectIfFound: true })
+
+  if (loading) {
+    return (
+      <div className="grid h-screen place-items-center">
+        <Spinner />
+      </div>
+    )
+  }
+
+  const provider = new TwitterAuthProvider()
+  auth.languageCode = 'ja'
+
+  const signIn = () => {
+    signInWithRedirect(auth, provider)
+  }
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       {!user && (
@@ -27,10 +30,22 @@ function SignInScreen() {
             Login
           </h1>
           <p className="mb-8">ログインしてください</p>
+          <button
+            onClick={signIn}
+            className="rounded bg-[#1DA1F2] py-2 px-4 font-bold text-white hover:bg-blue-700"
+          >
+            <span className="mr-2 inline-block h-4 w-4 fill-current ">
+              <Image
+                src="/images/brand/twitter.svg"
+                width={20}
+                height={20}
+                alt=""
+              />
+            </span>
+            Twitterでログインする
+          </button>
         </>
       )}
-
-      <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
     </div>
   )
 }

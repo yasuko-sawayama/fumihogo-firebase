@@ -15,3 +15,12 @@ export type Story = {
   restriction: Boolean
   userId: string
 }
+
+export type User = {
+  uid: string
+  photoURL?: string
+  displayName?: string | null
+  reloadUserInfo?: {
+    screenName?: string | null
+  }
+}

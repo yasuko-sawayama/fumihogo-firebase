@@ -1,8 +1,8 @@
 import { Disclosure } from '@headlessui/react'
 import { BellIcon } from '@heroicons/react/outline'
-import { User } from 'firebase/auth'
 import Image from 'next/image'
 import useUser from '../../hooks/useUser'
+import { User } from '../../types'
 import { userNavigation } from '../../utils/menuItems/userNaviigation'
 
 const MobileProfile = () => {
@@ -13,8 +13,8 @@ const MobileProfile = () => {
   }
 
   if (user) {
+    console.log(user)
     const userInfo = user as User
-
     return (
       <div className="border-t border-gray-200 pt-4 pb-3">
         <div className="flex items-center px-4">
@@ -32,8 +32,7 @@ const MobileProfile = () => {
               {userInfo.displayName}
             </div>
             <div className="text-sm font-medium text-gray-500">
-              {/* twitterのscreenNameを取る方法がわからなかったため暫定 */}
-              {(userInfo as any).reloadUserInfo.screenName}
+              {userInfo.reloadUserInfo?.screenName}
             </div>
           </div>
           <button
