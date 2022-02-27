@@ -1,8 +1,11 @@
-# Next.js + Tailwind CSS Example
+# ふみほご
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v3.0)](https://tailwindcss.com/blog/tailwindcss-v3) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
 
-## Preview
+Next.js & firebase練習用。
+
+## メモ
+
+- firebase emulatorでauthとfirestoreは `127.0.0.1` で立てているので注意。localhostだと疎通できなかった（原因不明。。）
 
 Preview the example live on [StackBlitz](http://stackblitz.com/):
 

@@ -15,23 +15,23 @@ import Layout from '../../../components/templates/Layout'
 import StoryTemplate from '../../../components/templates/StoryTemplate'
 import { db as client } from '../../../firebase/clientApp'
 import usePage from '../../../hooks/usePage'
-import useUser from '../../../hooks/useUser'
-import { Story } from '../../../types'
+import { Story, User } from '../../../types'
 import { PageData } from '../../../types/index'
 import { getTimestampString } from '../../../utils/common'
-
+import { auth } from '../../../utils/firebase-admin'
 type StoryProps = {
+  author: User
   story: Story
   pages: PageData[] | null
 }
 
-const Story = ({ story, story: { id, scope }, pages }: StoryProps) => {
-  const [user] = useUser({ redirectTo: '/auth' })
+const Story = ({ author, story, story: { id, scope }, pages }: StoryProps) => {
   const conditionalPage = usePage(id, 1, scope)
 
   return (
     <Layout>
       <StoryTemplate
+        author={author}
         story={story}
         page={scope === 'public' ? pages && pages[0] : conditionalPage}
       />
@@ -73,6 +73,19 @@ export const getStaticProps = async (
 
   const docData = docSnap.data()!
 
+  // 著者データ取得
+  const authorRecord = (await auth.getUser(docData.userId)) as User
+
+  // FIXME: キャストする方法がわからないので一つずつ代入
+  const author: User = {
+    uid: authorRecord.uid,
+    displayName: authorRecord.displayName,
+    photoURL: authorRecord.photoURL,
+    reloadUserInfo: {
+      screenName: authorRecord.reloadUserInfo?.screenName || '',
+    },
+  }
+
   const story = {
     ...docData,
     id: docSnap.id,
@@ -93,6 +106,7 @@ export const getStaticProps = async (
 
   return {
     props: {
+      author,
       story,
       pages,
     },

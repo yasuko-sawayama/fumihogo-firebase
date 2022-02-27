@@ -17,7 +17,7 @@ const ProfileDropdown = () => {
             <span className="sr-only">Open user menu</span>
             <Image
               className="h-8 w-8 rounded-full"
-              src={user?.photoURL || '/avator.svg'}
+              src={user?.photoURL || '/images/avator.svg'}
               alt=""
               width="32"
               height="32"
