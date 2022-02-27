@@ -31,26 +31,28 @@ type Props = {
 
 export default function HeadAvator({ author }: Props) {
   return (
-    <div className="-mx-8">
+    <div>
       {/* TODO: 表紙イメージ */}
-      <Image
-        className="-z-50 h-32 w-full object-cover lg:h-48"
-        src="/images/yohan-marion-VgtSzzcOajg-unsplash.jpg"
-        alt=""
-        width={1920}
-        height={1280}
-      />
-
+      <div className="relative -z-50 h-32  w-full lg:h-48">
+        <Image
+          className="object-cover"
+          src="/images/yohan-marion-VgtSzzcOajg-unsplash.jpg"
+          alt=""
+          layout="fill"
+          objectFit="cover"
+        />
+      </div>
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
           <div className="flex">
-            <Image
-              className="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32"
-              src={author.photoURL || '/images/avator.svg'}
-              alt=""
-              width={80}
-              height={80}
-            />
+            <div className="relative h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32 ">
+              <Image
+                className="rounded-full"
+                src={author.photoURL || '/images/avator.svg'}
+                alt=""
+                layout="fill"
+              />
+            </div>
           </div>
           <div className="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1">
             <div className="mt-6 min-w-0 flex-1 sm:hidden md:block">

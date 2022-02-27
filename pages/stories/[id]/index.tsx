@@ -11,8 +11,7 @@ import {
   GetStaticPropsResult,
 } from 'next/types'
 import { storiesCol } from '../../../components/models/index'
-import Layout from '../../../components/templates/Layout'
-import StoryTemplate from '../../../components/templates/StoryTemplate'
+import StoryLayout from '../../../components/templates/StoryLayout'
 import { db as client } from '../../../firebase/clientApp'
 import usePage from '../../../hooks/usePage'
 import { Story, User } from '../../../types'
@@ -29,13 +28,11 @@ const Story = ({ author, story, story: { id, scope }, pages }: StoryProps) => {
   const conditionalPage = usePage(id, 1, scope)
 
   return (
-    <Layout>
-      <StoryTemplate
-        author={author}
-        story={story}
-        page={scope === 'public' ? pages && pages[0] : conditionalPage}
-      />
-    </Layout>
+    <StoryLayout
+      author={author}
+      story={story}
+      page={scope === 'public' ? pages && pages[0] : conditionalPage}
+    />
   )
 }
 
