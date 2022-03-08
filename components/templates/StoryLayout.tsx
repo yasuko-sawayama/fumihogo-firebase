@@ -1,10 +1,10 @@
 import Head from 'next/head'
 import { Story, User } from '../../types'
 import { PageData } from '../../types/index'
-import { PageHeading, Spinner } from '../atoms'
+import { Spinner } from '../atoms'
 import PageContent from '../atoms/PageContent'
 import Nav from '../molecurles/nav'
-import { HeadAvator } from '../organisms'
+import { HeadAvator, PageHeading } from '../organisms'
 
 type Props = {
   author: User
@@ -13,7 +13,6 @@ type Props = {
 }
 
 const StoryLayout = ({ author, story, page }: Props) => {
-  // TODO: レンダリング
   const content = page?.content
   return (
     <>
@@ -32,7 +31,7 @@ const StoryLayout = ({ author, story, page }: Props) => {
                 <div className="mx-auto max-w-6xl sm:px-6 lg:px-8">
                   <div className="px-4 py-0 sm:px-0">
                     <header>
-                      <PageHeading {...story} />
+                      <PageHeading authorId={author.uid} {...story} />
                     </header>
                     <main>
                       {content ? (

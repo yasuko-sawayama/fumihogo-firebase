@@ -1,4 +1,5 @@
 export type PageData = {
+  title?: string
   content: string
   number: number
   timestamp?: string

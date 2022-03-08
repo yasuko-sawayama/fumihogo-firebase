@@ -5,12 +5,12 @@ import {
   getDoc,
   getDocs,
   query,
-  where
+  where,
 } from 'firebase/firestore'
 import { GetStaticPaths, GetStaticProps } from 'next/types'
-import Layout from '../../../components/templates/Layout'
-import { db } from '../../../firebase/clientApp'
-import { getTimestampString } from '../../../utils/common'
+import Layout from '../../../../components/templates/Layout'
+import { db } from '../../../../firebase/clientApp'
+import { getTimestampString } from '../../../../utils/common'
 
 type PageProps = {
   story?: {
@@ -27,7 +27,7 @@ const Page = (props: PageProps) => {
   const { title } = props.story
   if (!props.page)
     return (
-      <Layout title={`${title}:page${number}`}>
+      <Layout title={`${title}`}>
         <p>公開は許可されていません。</p>
       </Layout>
     )
@@ -46,10 +46,7 @@ const Page = (props: PageProps) => {
 export default Page
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const pageQuery = query(
-    collectionGroup(db, 'pages'),
-    where('number', '==', 1)
-  )
+  const pageQuery = query(collectionGroup(db, 'pages'))
   const pageSnapshots = await getDocs(pageQuery)
 
   pageSnapshots.docs.forEach(async (doc) => {})
@@ -68,6 +65,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
+// TODO: ServerSidePropsにして認証情報と照合する
 export const getStaticProps: GetStaticProps = async (context) => {
   if (!context.params?.id || !context.params?.page) {
     return {
@@ -104,6 +102,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     collection(db, 'stories', `${context.params.id}`, 'pages'),
     where('number', '==', parseInt(`${context.params.page}`))
   )
+
   const pageSnapshot = await getDocs(pageQuery)
   const pageData = pageSnapshot.docs[0]
 
