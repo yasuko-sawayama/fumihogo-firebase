@@ -1,13 +1,13 @@
 import { Menu, Transition } from '@headlessui/react'
+import { useAuthUser, withAuthUser } from 'next-firebase-auth'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Fragment } from 'react'
-import useUser from '../../hooks/useUser'
 import { classNames } from '../../utils/common'
 import { userNavigation } from '../../utils/menuItems/userNaviigation'
 
 const ProfileDropdown = () => {
-  const [user, loading, error] = useUser()
+  const user = useAuthUser()
 
   if (user) {
     return (
@@ -55,10 +55,6 @@ const ProfileDropdown = () => {
     )
   }
 
-  if (loading) {
-    return <p className="text-slate-400">...loading</p>
-  }
-
   return (
     <Link href="/auth">
       <a className="ml-1">ログイン</a>
@@ -66,4 +62,4 @@ const ProfileDropdown = () => {
   )
 }
 
-export default ProfileDropdown
+export default withAuthUser()(ProfileDropdown)
