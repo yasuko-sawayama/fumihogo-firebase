@@ -5,6 +5,7 @@ import {
   getDoc,
   getDocs,
 } from 'firebase/firestore'
+import { withAuthUser } from 'next-firebase-auth'
 import {
   GetStaticPaths,
   GetStaticPropsContext,
@@ -36,7 +37,7 @@ const Story = ({ author, story, story: { id, scope }, pages }: StoryProps) => {
   )
 }
 
-export default Story
+export default withAuthUser()(Story)
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const stories = await getDocs(storiesCol)

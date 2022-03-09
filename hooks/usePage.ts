@@ -1,13 +1,11 @@
 import { collection, getDocs, query, where } from 'firebase/firestore'
+import { AuthUserContext, useAuthUser } from 'next-firebase-auth'
 import { useEffect, useState } from 'react'
 import { db as client } from '../firebase/clientApp'
-import { PageData, Scope, User } from '../types'
-import useUser from './useUser'
+import { PageData, Scope } from '../types'
 
-type AuthUser = boolean | User | undefined | Error | null
-
-const checkScope = (user: AuthUser, scope: Scope) => {
-  if (scope === 'public' || (user && scope === 'login')) {
+const checkScope = (user: AuthUserContext, scope: Scope) => {
+  if (scope === 'public' || (user.id && scope === 'login')) {
     return true
   }
 
@@ -31,13 +29,21 @@ const getCurrentPage = async (
   }
 }
 
+const selectMessage = (scope: string) => {
+  switch (scope) {
+    case 'login':
+      return 'ログインしないと表示されません'
+  }
+  return 'このページは表示できません。'
+}
+
 export default function usePage(
   storyId: string,
   number: number,
   scope: Scope
 ): PageData | undefined {
   const [page, setPage] = useState<PageData>()
-  const [user] = useUser()
+  const user = useAuthUser()
 
   useEffect(() => {
     if (checkScope(user, scope)) {
@@ -45,7 +51,7 @@ export default function usePage(
     } else {
       setPage({
         number: 1,
-        content: 'このページは表示できません。',
+        content: selectMessage(scope),
       })
     }
   }, [user, scope])
