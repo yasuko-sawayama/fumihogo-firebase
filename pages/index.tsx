@@ -1,11 +1,11 @@
 import type { NextPage } from 'next'
+import { useAuthUser, withAuthUser } from 'next-firebase-auth'
 import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
-import useUser from '../hooks/useUser'
 
 const Home: NextPage = () => {
-  const [user, loading] = useUser()
+  const user = useAuthUser()
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
@@ -63,7 +63,7 @@ const Home: NextPage = () => {
             </p>
           </a>
         </div>
-        {!user && !loading && (
+        {!user && (
           <div className="mt-12">
             <Link href="/auth">
               <a
@@ -92,4 +92,4 @@ const Home: NextPage = () => {
   )
 }
 
-export default Home
+export default withAuthUser()(Home)

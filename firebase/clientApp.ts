@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app'
+import { getApps, initializeApp } from 'firebase/app'
 import { connectAuthEmulator, getAuth } from 'firebase/auth'
 import {
   collection,
@@ -21,7 +21,8 @@ const clientCredentials = {
   databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
 }
 
-const firebase = initializeApp(clientCredentials)
+const firebase = getApps()[0] || initializeApp(clientCredentials)
+
 // export const analytics = getAnalytics(firebase)
 
 export default firebase
@@ -33,7 +34,7 @@ if (
   process.env.NEXT_PUBLIC_USE_FIREBASE_EMULATOR === 'true' ||
   process.env.NODE_ENV === 'test'
 ) {
-  console.log('setup to connect local firebase emulator suite')
+  //console.log('setup to connect local firebase emulator suite')
   try {
     const config = require('./firebase.json')
     connectFirestoreEmulator(
