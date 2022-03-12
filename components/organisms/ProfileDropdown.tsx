@@ -9,7 +9,9 @@ import { userNavigation } from '../../utils/menuItems/userNaviigation'
 const ProfileDropdown = () => {
   const user = useAuthUser()
 
-  if (user) {
+  console.log(user)
+
+  if (user.id) {
     return (
       <Menu as="div" className="relative ml-3">
         <div>
