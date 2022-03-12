@@ -9,9 +9,9 @@ import {
 } from 'firebase/firestore'
 import Link from 'next/link'
 import { GetStaticPaths, GetStaticProps } from 'next/types'
-import Layout from '../../../../components/templates/Layout'
-import { db } from '../../../../firebase/clientApp'
-import { getTimestampString } from '../../../../utils/common'
+import Layout from '../../../../../components/templates/Layout'
+import { db } from '../../../../../firebase/clientApp'
+import { getTimestampString } from '../../../../../utils/common'
 
 type PageProps = {
   story?: {
@@ -19,6 +19,7 @@ type PageProps = {
     title: string
   }
   page?: {
+    id: string
     content: string
     number: number
   }
@@ -38,13 +39,14 @@ const Page = (props: PageProps) => {
   console.log(props)
 
   const buttons = [
-    <button
-      type="button"
-      className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-      key="edit"
-    >
-      TODO: 編集
-    </button>,
+    <Link href={`/stories/${id}/pages/{page.id}/edit`} key="edit" passHref>
+      <button
+        type="button"
+        className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+      >
+        TODO: 編集
+      </button>
+    </Link>,
     <Link href={`/stories/${id}/pages/new`} key="publish" passHref>
       <button
         type="button"

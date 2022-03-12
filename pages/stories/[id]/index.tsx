@@ -15,18 +15,18 @@ import { storiesCol } from '../../../components/models/index'
 import StoryLayout from '../../../components/templates/StoryLayout'
 import { db as client } from '../../../firebase/clientApp'
 import usePage from '../../../hooks/usePage'
-import { Story, User } from '../../../types'
+import { Story as StoryType, User } from '../../../types'
 import { PageData } from '../../../types/index'
 import { getTimestampString } from '../../../utils/common'
 import { auth } from '../../../utils/firebase-admin'
 type StoryProps = {
   author: User
-  story: Story
+  story: StoryType
   pages: PageData[] | null
 }
 
 const Story = ({ author, story, story: { id, scope }, pages }: StoryProps) => {
-  const conditionalPage = usePage(id, 1, scope)
+  const conditionalPage = usePage(story, 1)
 
   return (
     <StoryLayout
@@ -66,7 +66,7 @@ export const getStaticProps = async (
       client,
       'stories',
       context?.params?.id.toString() || 'xxx'
-    ) as DocumentReference<Story>
+    ) as DocumentReference<StoryType>
   )
 
   const docData = docSnap.data()!
