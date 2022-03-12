@@ -18,11 +18,11 @@ import {
   Input,
   SubmitButton,
   TextArea,
-} from '../../../components/atoms/Form'
-import { Layout } from '../../../components/templates'
-import { db } from '../../../firebase/clientApp'
-import useUser from '../../../hooks/useUser'
-import { PageData, Story } from '../../../types'
+} from '../../../../components/molecurles/Form'
+import { Layout } from '../../../../components/templates'
+import { db } from '../../../../firebase/clientApp'
+import useUser from '../../../../hooks/useUser'
+import { PageData, Story } from '../../../../types'
 
 const resolver: Resolver<PageData> = async (values) => {
   return {

@@ -7,6 +7,7 @@ import {
   query,
   where,
 } from 'firebase/firestore'
+import Link from 'next/link'
 import { GetStaticPaths, GetStaticProps } from 'next/types'
 import Layout from '../../../../components/templates/Layout'
 import { db } from '../../../../firebase/clientApp'
@@ -14,6 +15,7 @@ import { getTimestampString } from '../../../../utils/common'
 
 type PageProps = {
   story?: {
+    id: string
     title: string
   }
   page?: {
@@ -24,7 +26,7 @@ type PageProps = {
 
 const Page = (props: PageProps) => {
   if (!props.story) return <>Page Not Found</>
-  const { title } = props.story
+  const { title, id } = props.story
   if (!props.page)
     return (
       <Layout title={`${title}`}>
@@ -33,10 +35,35 @@ const Page = (props: PageProps) => {
     )
   const { number, content } = props.page
 
+  console.log(props)
+
+  const buttons = [
+    <button
+      type="button"
+      className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+      key="edit"
+    >
+      TODO: 編集
+    </button>,
+    <Link href={`/stories/${id}/pages/new`} key="publish" passHref>
+      <button
+        type="button"
+        className="ml-3 inline-flex items-center rounded-md border border-transparent bg-indigo-400 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:ring-offset-2"
+      >
+        新規ページ
+      </button>
+    </Link>,
+  ]
+
   return (
-    <Layout title={`${title}:page${number}`}>
+    <Layout title={`${title}:page${number}`} headerButtons={buttons}>
       <>
         <p>page: {number}</p>
+        <p>
+          <Link href={`/stories/${id}/pages/new`}>
+            <a>新規ページ</a>
+          </Link>
+        </p>
         {content}
       </>
     </Layout>
@@ -75,6 +102,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const storySnapshot = await getDoc(doc(db, 'stories', `${context.params.id}`))
   const storyData = {
+    id: storySnapshot.id,
     ...storySnapshot.data(),
     timestamp: getTimestampString(storySnapshot),
   }

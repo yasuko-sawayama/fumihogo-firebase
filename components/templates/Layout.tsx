@@ -6,10 +6,11 @@ import Nav from '../molecurles/nav'
 
 type Props = {
   title?: string
+  headerButtons?: JSX.Element[]
   children: React.ReactNode
 }
 
-export default function Layout({ title, children }: Props) {
+export default function Layout({ title, headerButtons, children }: Props) {
   return (
     <>
       <Head>
@@ -24,8 +25,13 @@ export default function Layout({ title, children }: Props) {
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="mx-auto max-w-4xl">
                   {title && (
-                    <header>
+                    <header className="md:flex md:items-center md:justify-between">
                       <Title title={title} />
+                      {headerButtons && (
+                        <div className="mt-4 flex md:mt-0 md:ml-4">
+                          {headerButtons.map((buttonElement) => buttonElement)}
+                        </div>
+                      )}
                     </header>
                   )}
                   {children}
