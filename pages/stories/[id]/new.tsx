@@ -1,5 +1,14 @@
-import { addDoc, collection, doc, serverTimestamp } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  doc,
+  DocumentSnapshot,
+  getDoc,
+  serverTimestamp,
+  updateDoc,
+} from 'firebase/firestore'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import { Resolver, SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import {
@@ -13,7 +22,7 @@ import {
 import { Layout } from '../../../components/templates'
 import { db } from '../../../firebase/clientApp'
 import useUser from '../../../hooks/useUser'
-import { PageData } from '../../../types'
+import { PageData, Story } from '../../../types'
 
 const resolver: Resolver<PageData> = async (values) => {
   return {
@@ -24,6 +33,7 @@ const resolver: Resolver<PageData> = async (values) => {
     errors: {},
   }
 }
+
 const NewPage = () => {
   const {
     register,
@@ -34,30 +44,45 @@ const NewPage = () => {
 
   const [user] = useUser({ redirectTo: '/auth' })
   const router = useRouter()
-  const { id, page } = router.query
+  const { id } = router.query
+  const [storyInfo, setStoryInfo] = useState<Story>()
+  const [lastPage, setLastPage] = useState<number>(1)
+  useEffect(() => {
+    if (!id) return
+    const storyId = id as string
 
-  /*   if (!id) {
-    router.push('/stories')
-  } */
+    const getStory = async () => {
+      const docRef = doc(db, 'stories', storyId)
+      const storySnapshot = (await getDoc(docRef)) as DocumentSnapshot<Story>
+
+      if (!storySnapshot) {
+        router.push('/stories')
+      }
+      setStoryInfo(storySnapshot?.data())
+      setLastPage((storySnapshot.data()?.totalPages as number) + 1)
+    }
+    getStory()
+  }, [id, router])
 
   const onSubmit: SubmitHandler<PageData> = async (data) => {
-    const { title, number, content } = data
-
     const docId = id?.toString() || ''
 
     try {
       const docRef = doc(db, 'stories', docId)
       const pageCollectinRef = collection(docRef, 'pages')
 
-      addDoc(pageCollectinRef, {
+      await addDoc(pageCollectinRef, {
         ...data,
-        // なぜかこうしないとnumberにstringが入っている。。。
-        number: parseInt(number as unknown as string),
+        number: lastPage,
         timestamp: serverTimestamp(),
       })
 
+      await updateDoc(docRef, {
+        totalPages: lastPage,
+      })
+
       console.log('Page written in document: ', docId)
-      router.push(`/stories/${docId}/${number}`)
+      router.push(`/stories/${docId}/pages/${lastPage}`)
       toast.success('ページを追加しました!')
     } catch (e) {
       console.error('Error adding document: ', e)
@@ -67,6 +92,7 @@ const NewPage = () => {
   return (
     <Layout title="新しいページを書く">
       <Form onSubmit={handleSubmit(onSubmit)}>
+        <h1>タイトル：{storyInfo?.title}</h1>
         <BasicInfoFieldsArea>
           <div className="sm:col-span-6">
             <h3 className="text-lg font-medium leading-6 text-gray-900">
@@ -90,14 +116,6 @@ const NewPage = () => {
               errors={errors}
             />
           </div>
-          <div className="col-span-1">
-            <Input
-              label="ページ位置"
-              type="number"
-              {...register('number', { valueAsNumber: true })}
-              errors={errors}
-            />
-          </div>
         </BasicInfoFieldsArea>
 
         {/*         <div className="pt-8">
@@ -107,8 +125,9 @@ const NewPage = () => {
           <h3 className="text-lg font-medium leading-6 text-gray-900">本文</h3>
           <div className="sm:col-span-6">
             <TextArea
-              label="ページ1"
+              label={`ページ${lastPage}`}
               defaultValue=""
+              required={true}
               rows={20}
               {...register('content', {
                 maxLength: {

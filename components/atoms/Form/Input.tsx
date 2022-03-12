@@ -8,12 +8,22 @@ const Input = forwardRef<
   {
     label: string
     type?: string
+    defaultValue?: any
     autoComplete?: string
     errors: FieldErrors
   } & ReturnType<UseFormRegister<FormValues>>
 >(
   (
-    { onChange, onBlur, name, type = 'text', label, autoComplete, errors },
+    {
+      onChange,
+      onBlur,
+      name,
+      type = 'text',
+      defaultValue,
+      label,
+      autoComplete,
+      errors,
+    },
     ref
   ) => (
     <>
@@ -25,6 +35,7 @@ const Input = forwardRef<
           type={type}
           name={name}
           ref={ref}
+          defaultValue={defaultValue}
           onChange={onChange}
           onBlur={onBlur}
           autoComplete={autoComplete}

@@ -15,6 +15,7 @@ export type Story = {
   scope: Scope
   restriction: Boolean
   userId: string
+  totalPages: number
 }
 
 export type User = {

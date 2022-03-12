@@ -48,6 +48,7 @@ const NewStory = () => {
       const docRef = await addDoc(collection(db, 'stories'), {
         ...storyInfo,
         userId: userInfo.uid,
+        totalPages: 1,
         timestamp: serverTimestamp(),
       })
 

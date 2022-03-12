@@ -1,27 +1,20 @@
 import { Disclosure } from '@headlessui/react'
 import { BellIcon } from '@heroicons/react/outline'
+import { useAuthUser } from 'next-firebase-auth'
 import Image from 'next/image'
-import useUser from '../../hooks/useUser'
-import { User } from '../../types'
 import { userNavigation } from '../../utils/menuItems/userNaviigation'
 
 const MobileProfile = () => {
-  const [user, loading, error] = useUser()
+  const user = useAuthUser()
 
-  if (loading) {
-    return <p className="text-slate-400">...loading</p>
-  }
-
-  if (user) {
-    console.log(user)
-    const userInfo = user as User
+  if (user.id) {
     return (
       <div className="border-t border-gray-200 pt-4 pb-3">
         <div className="flex items-center px-4">
           <div className="flex-shrink-0">
             <Image
               className="h-10 w-10 rounded-full"
-              src={userInfo?.photoURL || '/avator.svg'}
+              src={user.photoURL || '/avator.svg'}
               alt=""
               width="24"
               height="24"
@@ -29,10 +22,13 @@ const MobileProfile = () => {
           </div>
           <div className="ml-3">
             <div className="text-base font-medium text-gray-800">
-              {userInfo.displayName}
+              {user.displayName}
             </div>
             <div className="text-sm font-medium text-gray-500">
-              {userInfo.reloadUserInfo?.screenName}
+              {
+                user.firebaseUser?.reloadUserInfo?.providerUserInfo[0]
+                  ?.screenName
+              }
             </div>
           </div>
           <button
