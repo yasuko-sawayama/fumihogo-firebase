@@ -1,30 +1,20 @@
 import { doc, getDoc, getDocs, query, where } from 'firebase/firestore'
-import { withAuthUserTokenSSR } from 'next-firebase-auth'
+import { withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
 import Link from 'next/link'
-import { storiesCol } from '../../../../../components/models/index'
-import Layout from '../../../../../components/templates/Layout'
-import { pageSubCol } from '../../../../../firebase/clientApp'
+import { VFC } from 'react'
+import { StoryLayout } from '../../../../../components/templates'
+import { pageSubCol, storiesCol } from '../../../../../firebase/clientApp'
+import { Page, Story } from '../../../../../types'
 import { getTimestampString } from '../../../../../utils/common'
 
 type PageProps = {
-  story: {
-    id: string
-    title: string
-  }
-  page: {
-    id: string
-    content: string
-    number: number
-  }
+  story: Story
+  page: Page
   myStory: boolean
 }
 
 // withAuthUserTokenSSRを通すとInferGetServerSidePropsTypeが使えない？
-const Page = ({
-  story: { title, id },
-  page: { number, content },
-  myStory,
-}: PageProps) => {
+const Page: VFC<PageProps> = ({ story, story: { id }, page, myStory }) => {
   const buttons = [
     <Link href={`/stories/${id}/pages/{page.id}/edit`} key="edit" passHref>
       <button
@@ -44,25 +34,10 @@ const Page = ({
     </Link>,
   ]
 
-  return (
-    <Layout
-      title={`${title}:page${number}`}
-      headerButtons={myStory ? buttons : null}
-    >
-      <>
-        <p>page: {number}</p>
-        <p>
-          <Link href={`/stories/${id}/pages/new`}>
-            <a>新規ページ</a>
-          </Link>
-        </p>
-        {content}
-      </>
-    </Layout>
-  )
+  return <StoryLayout author={story.author} story={story} page={page} />
 }
 
-export default Page
+export default withAuthUser<PageProps>()(Page)
 
 export const getServerSideProps = withAuthUserTokenSSR()(
   async ({ params, AuthUser }) => {
