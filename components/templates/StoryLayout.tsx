@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { Story, User } from '../../types'
-import { PageData } from '../../types/index'
+import { Page } from '../../types/index'
 import { Spinner } from '../atoms'
 import PageContent from '../atoms/PageContent'
 import Nav from '../molecurles/nav'
@@ -9,7 +9,7 @@ import { HeadAvator, PageHeading } from '../organisms'
 type Props = {
   author: User
   story: Story
-  page?: PageData | null
+  page?: Page | null
 }
 
 const StoryLayout = ({ author, story, page }: Props) => {

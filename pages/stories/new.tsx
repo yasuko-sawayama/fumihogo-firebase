@@ -15,7 +15,6 @@ import {
 import Layout from '../../components/templates/Layout'
 import { db } from '../../firebase/clientApp'
 import useUser from '../../hooks/useUser'
-import { PageData } from '../../types'
 
 export interface INewStoryFormValues {
   title: string
@@ -39,7 +38,7 @@ const NewStory = () => {
       userId: userInfo.uid,
     }
 
-    const pageData: PageData = {
+    const pageData: Page = {
       number: 1,
       content: page,
     }

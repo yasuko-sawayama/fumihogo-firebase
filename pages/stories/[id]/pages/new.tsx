@@ -13,7 +13,7 @@ import { Layout } from '../../../../components/templates'
 import { db } from '../../../../firebase/clientApp'
 import useStory from '../../../../hooks/useStory'
 import useUser from '../../../../hooks/useUser'
-import { PageData } from '../../../../types'
+import { Page } from '../../../../types'
 
 const NewPage = () => {
   const [user] = useUser({ redirectTo: '/auth' })
@@ -22,7 +22,7 @@ const NewPage = () => {
 
   const [storyInfo, lastPage] = useStory(id as string)
 
-  const onSubmit: SubmitHandler<PageData> = async (data) => {
+  const onSubmit: SubmitHandler<Page> = async (data) => {
     const docId = id?.toString() || ''
 
     try {

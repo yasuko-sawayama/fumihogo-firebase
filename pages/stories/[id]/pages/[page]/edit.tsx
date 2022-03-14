@@ -3,9 +3,9 @@ import { SubmitHandler } from 'react-hook-form'
 import PageForm from '../../../../../components/organisms/PageForm'
 import { Layout } from '../../../../../components/templates'
 import useStory from '../../../../../hooks/useStory'
-import { PageData } from '../../../../../types'
+import { Page } from '../../../../../types'
 
-const onSubmit: SubmitHandler<PageData> = (data) => {
+const onSubmit: SubmitHandler<Page> = (data) => {
   console.log(data)
 }
 

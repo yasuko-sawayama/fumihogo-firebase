@@ -6,7 +6,7 @@ import Nav from '../molecurles/nav'
 
 type Props = {
   title?: string
-  headerButtons?: JSX.Element[]
+  headerButtons?: JSX.Element[] | null
   children: React.ReactNode
 }
 

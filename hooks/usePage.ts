@@ -2,7 +2,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore'
 import { AuthUserContext, useAuthUser } from 'next-firebase-auth'
 import { useEffect, useState } from 'react'
 import { db as client } from '../firebase/clientApp'
-import { PageData, Scope, Story } from '../types'
+import { Page, Scope, Story } from '../types'
 
 const checkScope = (user: AuthUserContext, scope: Scope) => {
   if (scope === 'public' || (user.id && scope === 'login')) {
@@ -24,7 +24,7 @@ const getCurrentPage = async (
   const pageDocs = await getDocs(pageQuery)
 
   if (!pageDocs.empty && pageDocs.docs[0]) {
-    const pageData = pageDocs.docs[0].data() as PageData
+    const pageData = pageDocs.docs[0].data() as Page
     setPage(pageData)
   }
 }
@@ -40,8 +40,8 @@ const selectMessage = (scope: string) => {
 export default function usePage(
   story: Story,
   number: number
-): PageData | undefined {
-  const [page, setPage] = useState<PageData>()
+): Page | undefined {
+  const [page, setPage] = useState<Page>()
   const user = useAuthUser()
 
   useEffect(() => {

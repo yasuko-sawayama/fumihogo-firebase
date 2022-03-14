@@ -1,5 +1,5 @@
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { PageData } from '../../types'
+import { Page } from '../../types'
 import { Story } from '../../types/index'
 import {
   BasicInfoFieldsArea,
@@ -11,7 +11,7 @@ import {
 } from '../molecurles/Form'
 
 type Props = {
-  onSubmit: SubmitHandler<PageData>
+  onSubmit: SubmitHandler<Page>
   storyInfo: Story
   pageNumber: number
 }
@@ -22,7 +22,7 @@ const PageForm = ({ onSubmit, storyInfo, pageNumber }: Props) => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<PageData>()
+  } = useForm<Page>()
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <BasicInfoFieldsArea>

@@ -7,6 +7,7 @@ import {
   DocumentData,
   getFirestore,
 } from 'firebase/firestore'
+import { Page, Story } from '../types'
 /* import 'firebase/auth'
 import 'firebase/firestore' */
 
@@ -52,3 +53,15 @@ if (
 export const createCollection = <T = DocumentData>(collectionName: string) => {
   return collection(db, collectionName) as CollectionReference<T>
 }
+
+export const createSubCollection = <T = DocumentData>(
+  parentCollectionName: string,
+  parentId: string,
+  collectionName: string
+) => {
+  return collection(db, parentCollectionName, parentId, collectionName)
+}
+
+export const storyCol = createCollection<Story>('stories')
+export const pageSubCol = (parentId: string) =>
+  createSubCollection<Page>('stories', parentId, 'pages')

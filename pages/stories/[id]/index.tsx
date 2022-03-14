@@ -16,13 +16,13 @@ import StoryLayout from '../../../components/templates/StoryLayout'
 import { db as client } from '../../../firebase/clientApp'
 import usePage from '../../../hooks/usePage'
 import { Story as StoryType, User } from '../../../types'
-import { PageData } from '../../../types/index'
+import { Page } from '../../../types/index'
 import { getTimestampString } from '../../../utils/common'
 import { auth } from '../../../utils/firebase-admin'
 type StoryProps = {
   author: User
   story: StoryType
-  pages: PageData[] | null
+  pages: Page[] | null
 }
 
 const Story = ({ author, story, story: { id, scope }, pages }: StoryProps) => {
