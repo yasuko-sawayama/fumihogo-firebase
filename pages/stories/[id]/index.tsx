@@ -11,6 +11,7 @@ import {
   GetStaticPropsContext,
   GetStaticPropsResult,
 } from 'next/types'
+import { VFC } from 'react'
 import StoryLayout from '../../../components/templates/StoryLayout'
 import { db as client, storiesCol } from '../../../firebase/clientApp'
 import usePage from '../../../hooks/usePage'
@@ -22,7 +23,11 @@ type StoryProps = {
   pages: Page[] | null
 }
 
-const Story = ({ story, story: { id, scope, author }, pages }: StoryProps) => {
+const Story: VFC<StoryProps> = ({
+  story,
+  story: { id, scope, author },
+  pages,
+}) => {
   const conditionalPage = usePage(story, 1)
 
   return (
@@ -34,7 +39,7 @@ const Story = ({ story, story: { id, scope, author }, pages }: StoryProps) => {
   )
 }
 
-export default withAuthUser()(Story)
+export default withAuthUser<StoryProps>()(Story)
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const stories = await getDocs(storiesCol)

@@ -57,6 +57,7 @@ const NewStory = () => {
           uid: userId,
           displayName: user.displayName!,
           photoURL: user.photoURL,
+          // Twitterログインを前提とする
           twitterScreenName: firebaseUser?.reloadUserInfo?.screenName || '',
         },
         totalPages: 1,

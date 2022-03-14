@@ -13,7 +13,6 @@ type PageProps = {
   myStory: boolean
 }
 
-// withAuthUserTokenSSRを通すとInferGetServerSidePropsTypeが使えない？
 const Page: VFC<PageProps> = ({ story, story: { id }, page, myStory }) => {
   const buttons = [
     <Link href={`/stories/${id}/pages/{page.id}/edit`} key="edit" passHref>

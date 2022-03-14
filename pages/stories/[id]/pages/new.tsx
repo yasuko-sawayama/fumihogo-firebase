@@ -7,6 +7,7 @@ import {
 } from 'firebase/firestore'
 import { AuthAction, useAuthUser, withAuthUser } from 'next-firebase-auth'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import { SubmitHandler } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { Spinner } from '../../../../components/atoms'
@@ -21,7 +22,19 @@ const NewPage = () => {
   const router = useRouter()
   const { id } = router.query
 
+  // TODO: SSR化
   const [storyInfo, lastPage] = useStory(id as string)
+
+  useEffect(() => {
+    // 取得中は何もしない
+    if (!user.id || !storyInfo || !storyInfo.author.uid) {
+      return
+    }
+
+    if (user.id !== storyInfo.author.uid) {
+      router.push('/')
+    }
+  }, [user, storyInfo, router])
 
   const onSubmit: SubmitHandler<Page> = async (data) => {
     const docId = id?.toString() || ''
