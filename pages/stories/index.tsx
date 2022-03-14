@@ -1,10 +1,11 @@
 import { getDocs } from 'firebase/firestore'
 import Link from 'next/link'
 import { GetStaticProps } from 'next/types'
-import { storiesCol } from '../../components/models/index'
 import Layout from '../../components/templates/Layout'
+import { storiesCol } from '../../firebase/clientApp'
 import { Story } from '../../types'
 import { getTimestampString } from '../../utils/common'
+
 
 type Props = {
   stories: Story[]
