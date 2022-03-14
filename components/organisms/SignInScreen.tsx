@@ -1,19 +1,11 @@
 import { signInWithRedirect, TwitterAuthProvider } from 'firebase/auth'
+import { withAuthUser } from 'next-firebase-auth'
 import Image from 'next/image'
 import { auth } from '../../firebase/clientApp'
 import useUser from '../../hooks/useUser'
-import Spinner from '../atoms/Spinner'
 
 function SignInScreen() {
-  const [user, loading] = useUser({ redirectTo: '/', redirectIfFound: true })
-
-  if (loading) {
-    return (
-      <div className="grid h-screen place-items-center">
-        <Spinner />
-      </div>
-    )
-  }
+  const user = useUser({ redirectTo: '/stories', redirectIfFound: true })
 
   const provider = new TwitterAuthProvider()
   auth.languageCode = 'ja'
@@ -24,7 +16,7 @@ function SignInScreen() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
-      {!user && (
+      {!user.id && (
         <>
           <h1 className="mb-3 text-3xl font-bold leading-tight text-gray-900">
             Login
@@ -50,4 +42,4 @@ function SignInScreen() {
   )
 }
 
-export default SignInScreen
+export default withAuthUser()(SignInScreen)

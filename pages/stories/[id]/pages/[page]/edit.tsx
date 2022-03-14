@@ -1,5 +1,7 @@
+import { AuthAction, useAuthUser, withAuthUser } from 'next-firebase-auth'
 import { useRouter } from 'next/router'
 import { SubmitHandler } from 'react-hook-form'
+import { Spinner } from '../../../../../components/atoms'
 import PageForm from '../../../../../components/organisms/PageForm'
 import { Layout } from '../../../../../components/templates'
 import useStory from '../../../../../hooks/useStory'
@@ -15,6 +17,7 @@ const PageEdit = () => {
   const pageNumber = parseInt(page as string)
 
   const [storyInfo] = useStory(id as string)
+  const user = useAuthUser()
 
   return (
     <Layout title="ページを編集する">
@@ -29,4 +32,8 @@ const PageEdit = () => {
   )
 }
 
-export default PageEdit
+export default withAuthUser({
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  LoaderComponent: Spinner,
+})(PageEdit)

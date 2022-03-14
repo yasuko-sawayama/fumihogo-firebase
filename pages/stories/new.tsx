@@ -1,5 +1,5 @@
-import { UserInfo } from 'firebase-admin/lib/auth/user-record'
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
+import { AuthAction, useAuthUser, withAuthUser } from 'next-firebase-auth'
 import Router from 'next/router'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
@@ -14,7 +14,7 @@ import {
 } from '../../components/molecurles/Form'
 import Layout from '../../components/templates/Layout'
 import { db } from '../../firebase/clientApp'
-import useUser from '../../hooks/useUser'
+import { Page } from '../../types'
 
 export interface INewStoryFormValues {
   title: string
@@ -30,12 +30,11 @@ const NewStory = () => {
     watch,
     formState: { errors },
   } = useForm()
-  const [user] = useUser({ redirectTo: '/auth' })
+  const user = useAuthUser()
   const onSubmit: SubmitHandler<INewStoryFormValues> = async (data) => {
-    const userInfo = user as UserInfo
     const { page, ...storyInfo } = {
       ...data,
-      userId: userInfo.uid,
+      userId: user.id,
     }
 
     const pageData: Page = {
@@ -46,7 +45,7 @@ const NewStory = () => {
     try {
       const docRef = await addDoc(collection(db, 'stories'), {
         ...storyInfo,
-        userId: userInfo.uid,
+        userId: user.id,
         totalPages: 1,
         timestamp: serverTimestamp(),
       })
@@ -248,6 +247,6 @@ const NewStory = () => {
   )
 }
 
-export default NewStory
-
-
+export default withAuthUser({
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+})(NewStory)

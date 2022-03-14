@@ -1,8 +1,9 @@
 import { signOut } from 'firebase/auth'
+import { AuthAction, useAuthUser, withAuthUser } from 'next-firebase-auth'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { Spinner } from '../components/atoms'
 import { auth } from '../firebase/clientApp'
-import useUser from '../hooks/useUser'
 
 const SignOut = () => {
   const router = useRouter()
@@ -19,7 +20,7 @@ const SignOut = () => {
       })
   }
 
-  const [_curentuser] = useUser({ redirectTo: '/auth' })
+  const user = useAuthUser()
 
   return (
     <div className="mt-40 text-center">
@@ -69,4 +70,7 @@ const SignOut = () => {
   )
 }
 
-export default SignOut
+export default withAuthUser({
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  LoaderComponent: Spinner,
+})(SignOut)

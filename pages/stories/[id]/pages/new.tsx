@@ -5,18 +5,19 @@ import {
   serverTimestamp,
   updateDoc,
 } from 'firebase/firestore'
+import { AuthAction, useAuthUser, withAuthUser } from 'next-firebase-auth'
 import { useRouter } from 'next/router'
 import { SubmitHandler } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import { Spinner } from '../../../../components/atoms'
 import PageForm from '../../../../components/organisms/PageForm'
 import { Layout } from '../../../../components/templates'
 import { db } from '../../../../firebase/clientApp'
 import useStory from '../../../../hooks/useStory'
-import useUser from '../../../../hooks/useUser'
 import { Page } from '../../../../types'
 
 const NewPage = () => {
-  const [user] = useUser({ redirectTo: '/auth' })
+  const user = useAuthUser()
   const router = useRouter()
   const { id } = router.query
 
@@ -69,4 +70,8 @@ const NewPage = () => {
   )
 }
 
-export default NewPage
+export default withAuthUser({
+  whenUnauthedBeforeInit: AuthAction.SHOW_LOADER,
+  whenUnauthedAfterInit: AuthAction.REDIRECT_TO_LOGIN,
+  LoaderComponent: Spinner,
+})(NewPage)

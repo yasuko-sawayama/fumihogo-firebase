@@ -1,8 +1,6 @@
+import { useAuthUser } from 'next-firebase-auth'
 import Router from 'next/router'
 import { useEffect } from 'react'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth } from '../firebase/clientApp'
-import { User } from '../types'
 
 type Props = {
   redirectTo?: string
@@ -13,25 +11,23 @@ export default function useUser({
   redirectTo = '',
   redirectIfFound = false,
 }: Props = {}) {
-  const [authUser, loading, error] = useAuthState(auth)
-  const user = authUser as User
+  const user = useAuthUser()
 
   useEffect(() => {
     // if no redirect needed, just return (example: already on /dashboard)
-    // if user data not yet there (fetch in progress, logged in or not) then don't do anything yet
-    if (!redirectTo || loading) {
+    if (!redirectTo) {
       return
     }
 
     if (
       // If redirectTo is set, redirect if the user was not found.
-      (redirectTo && !redirectIfFound && !user) ||
+      (!redirectIfFound && !user.id) ||
       // If redirectIfFound is also set, redirect if the user was found
-      (redirectIfFound && user)
+      (redirectIfFound && user.id)
     ) {
       Router.push(redirectTo)
     }
-  }, [user, loading, redirectIfFound, redirectTo])
+  }, [user, redirectIfFound, redirectTo])
 
-  return [user, loading, error]
+  return user
 }
