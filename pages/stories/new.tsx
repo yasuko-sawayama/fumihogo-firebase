@@ -1,6 +1,6 @@
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
 import { AuthAction, useAuthUser, withAuthUser } from 'next-firebase-auth'
-import Router from 'next/router'
+import { useRouter } from 'next/router'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import {
@@ -13,13 +13,14 @@ import {
   TextArea,
 } from '../../components/molecurles/Form'
 import Layout from '../../components/templates/Layout'
-import { db } from '../../firebase/clientApp'
-import { Page } from '../../types'
+import { storiesCol } from '../../firebase/clientApp'
+import { Page, Scope, User } from '../../types'
 
 export interface INewStoryFormValues {
   title: string
   description: string
   restriction: boolean
+  scope: Scope
   page: string
 }
 
@@ -29,12 +30,15 @@ const NewStory = () => {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm()
+  } = useForm<INewStoryFormValues>()
   const user = useAuthUser()
+  const router = useRouter()
+
   const onSubmit: SubmitHandler<INewStoryFormValues> = async (data) => {
+    const userId = user!.id!
+
     const { page, ...storyInfo } = {
       ...data,
-      userId: user.id,
     }
 
     const pageData: Page = {
@@ -43,9 +47,18 @@ const NewStory = () => {
     }
 
     try {
-      const docRef = await addDoc(collection(db, 'stories'), {
+      // 取り方がわからないので無理矢理キャスト・・・
+      const firebaseUser: User = user.firebaseUser!
+
+      const docRef = await addDoc(storiesCol, {
         ...storyInfo,
-        userId: user.id,
+        userId,
+        author: {
+          uid: userId,
+          displayName: user.displayName!,
+          photoURL: user.photoURL,
+          twitterScreenName: firebaseUser?.reloadUserInfo?.screenName || '',
+        },
         totalPages: 1,
         timestamp: serverTimestamp(),
       })
@@ -57,7 +70,7 @@ const NewStory = () => {
       })
 
       console.log('Document written with ID: ', docRef.id)
-      Router.push(`/stories/${docRef.id}`)
+      router.push(`/stories/${docRef.id}`)
       toast.success('作成しました!')
     } catch (e) {
       console.error('Error adding document: ', e)
@@ -223,6 +236,7 @@ const NewStory = () => {
               defaultValue=""
               rows={20}
               {...register('page', {
+                required: true,
                 maxLength: {
                   value: 50000,
                   message: 'Ⅰページは5万文字以内で入力してください。',

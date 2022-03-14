@@ -11,21 +11,18 @@ import {
   GetStaticPropsContext,
   GetStaticPropsResult,
 } from 'next/types'
-import { storiesCol } from '../../../components/models/index'
 import StoryLayout from '../../../components/templates/StoryLayout'
-import { db as client } from '../../../firebase/clientApp'
+import { db as client, storiesCol } from '../../../firebase/clientApp'
 import usePage from '../../../hooks/usePage'
-import { Story as StoryType, User } from '../../../types'
+import { Story as StoryType } from '../../../types'
 import { Page } from '../../../types/index'
 import { getTimestampString } from '../../../utils/common'
-import { auth } from '../../../utils/firebase-admin'
 type StoryProps = {
-  author: User
   story: StoryType
   pages: Page[] | null
 }
 
-const Story = ({ author, story, story: { id, scope }, pages }: StoryProps) => {
+const Story = ({ story, story: { id, scope, author }, pages }: StoryProps) => {
   const conditionalPage = usePage(story, 1)
 
   return (
@@ -71,19 +68,6 @@ export const getStaticProps = async (
 
   const docData = docSnap.data()!
 
-  // 著者データ取得
-  const authorRecord = (await auth.getUser(docData.userId)) as User
-
-  // FIXME: キャストする方法がわからないので一つずつ代入
-  const author: User = {
-    uid: authorRecord.uid,
-    displayName: authorRecord.displayName,
-    photoURL: authorRecord.photoURL,
-    reloadUserInfo: {
-      screenName: authorRecord.reloadUserInfo?.screenName || '',
-    },
-  }
-
   const story = {
     ...docData,
     id: docSnap.id,
@@ -96,15 +80,14 @@ export const getStaticProps = async (
   // 公開範囲がpublicの時だけページ内容を取得
   const pages =
     docData?.scope === 'public'
-      ? pageDocs.docs.map((doc) => ({
+      ? (pageDocs.docs.map((doc) => ({
           ...doc.data(),
           timestamp: getTimestampString(doc),
-        }))
+        })) as Page[])
       : null
 
   return {
     props: {
-      author,
       story,
       pages,
     },

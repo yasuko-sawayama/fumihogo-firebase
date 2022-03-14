@@ -62,6 +62,6 @@ export const createSubCollection = <T = DocumentData>(
   return collection(db, parentCollectionName, parentId, collectionName)
 }
 
-export const storyCol = createCollection<Story>('stories')
+export const storiesCol = createCollection<Story>('stories')
 export const pageSubCol = (parentId: string) =>
   createSubCollection<Page>('stories', parentId, 'pages')
