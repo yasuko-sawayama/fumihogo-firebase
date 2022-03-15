@@ -1,11 +1,11 @@
-import { doc, getDoc, getDocs, query, where } from 'firebase/firestore'
+import { getDocs, query, where } from 'firebase/firestore'
 import { withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
 import Link from 'next/link'
 import { VFC } from 'react'
 import { StoryLayout } from '../../../../../components/templates'
-import { pageSubCol, storiesCol } from '../../../../../firebase/clientApp'
+import { pageSubCol } from '../../../../../firebase/clientApp'
 import { Page, Story } from '../../../../../types'
-import { getTimestampString } from '../../../../../utils/common'
+import { getStoryData, getTimestampString } from '../../../../../utils/common'
 
 type PageProps = {
   story: Story
@@ -40,7 +40,7 @@ export default withAuthUser<PageProps>()(Page)
 
 export const getServerSideProps = withAuthUserTokenSSR()(
   async ({ params, AuthUser }) => {
-    if (!params?.id || !params?.page) {
+    if (!params?.id || typeof params.id !== 'string' || !params?.page) {
       return {
         redirect: {
           destination: '/',
@@ -49,15 +49,10 @@ export const getServerSideProps = withAuthUserTokenSSR()(
       }
     }
 
-    const storySnapshot = await getDoc(doc(storiesCol, `${params.id}`))
-    const storyData = {
-      id: storySnapshot.id,
-      ...storySnapshot.data(),
-      timestamp: getTimestampString(storySnapshot),
-    }
+    const storyData = await getStoryData(params.id)
 
     const checkScope = () => {
-      switch (storyData.scope) {
+      switch (storyData?.scope) {
         case 'public':
           return true
         case 'login':
@@ -67,7 +62,7 @@ export const getServerSideProps = withAuthUserTokenSSR()(
       return false
     }
 
-    if (storySnapshot.exists() && checkScope()) {
+    if (storyData && checkScope()) {
       const pageQuery = query(
         pageSubCol(storyData.id),
         where('number', '==', parseInt(`${params.page}`))
