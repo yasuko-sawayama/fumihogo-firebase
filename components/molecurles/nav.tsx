@@ -1,12 +1,17 @@
 import { Disclosure } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/solid'
+import { useAuthUser, withAuthUser } from 'next-firebase-auth'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { FC } from 'react'
 import { classNames } from '../../utils/common'
 import { navigation } from '../../utils/menuItems/navigation'
 import { MobileMenu, ProfileDropdown } from '../organisms'
 
 const Nav: FC = () => {
+  const router = useRouter()
+  const user = useAuthUser()
+
   return (
     <Disclosure as="nav" className="border-b border-gray-200 bg-white">
       {({ open }) => (
@@ -33,21 +38,26 @@ const Nav: FC = () => {
                   </Link>
                 </div>
                 <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-                  {navigation.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className={classNames(
-                        item.current
-                          ? 'border-indigo-500 text-gray-900'
-                          : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
-                        'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium'
-                      )}
-                      aria-current={item.current ? 'page' : undefined}
-                    >
-                      {item.name}
-                    </a>
-                  ))}
+                  {navigation.map((item) => {
+                    const current = item.href === router.asPath
+                    return (
+                      ((item.login && user.id) || !item.login) && (
+                        <a
+                          key={item.name}
+                          href={item.href}
+                          className={classNames(
+                            current
+                              ? 'border-indigo-500 text-gray-900'
+                              : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700',
+                            'inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium'
+                          )}
+                          aria-current={current ? 'page' : undefined}
+                        >
+                          {item.name}
+                        </a>
+                      )
+                    )
+                  })}
                 </div>
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:items-center">
@@ -80,4 +90,4 @@ const Nav: FC = () => {
   )
 }
 
-export default Nav
+export default withAuthUser()(Nav)
