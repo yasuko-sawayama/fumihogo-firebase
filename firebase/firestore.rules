@@ -13,12 +13,6 @@ service cloud.firestore {
       }
     }
 
-    // ページの直接リストを許可
-    match /{stories=**}/pages/{page} {
-      allow read: if true; //TODO: 公開範囲
-      allow write: if false;
-    }
-
     match /{document=**} {
       allow read, write: if false;
     }
