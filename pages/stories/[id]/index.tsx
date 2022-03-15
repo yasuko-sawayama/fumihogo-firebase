@@ -1,100 +1,72 @@
-import {
-  collection,
-  doc,
-  DocumentReference,
-  getDoc,
-  getDocs,
-} from 'firebase/firestore'
-import { withAuthUser } from 'next-firebase-auth'
-import {
-  GetStaticPaths,
-  GetStaticPropsContext,
-  GetStaticPropsResult,
-} from 'next/types'
+import { withAuthUserTokenSSR } from 'next-firebase-auth'
 import { VFC } from 'react'
 import StoryLayout from '../../../components/templates/StoryLayout'
-import { db as client, storiesCol } from '../../../firebase/clientApp'
-import usePage from '../../../hooks/usePage'
 import { Story as StoryType } from '../../../types'
 import { Page } from '../../../types/index'
-import { getTimestampString } from '../../../utils/common'
+import { getPageData, getStoryData } from '../../../utils/common'
+
 type StoryProps = {
   story: StoryType
-  pages: Page[] | null
+  page?: Page | null
+  authMessage?: string | null
 }
 
-const Story: VFC<StoryProps> = ({ story, story: { scope, author }, pages }) => {
-  const conditionalPage = usePage(story, 1)
-
+const Story: VFC<StoryProps> = ({
+  story,
+  story: { author },
+  page,
+  authMessage,
+}) => {
   return (
     <StoryLayout
       author={author}
       story={story}
-      page={scope === 'public' ? pages && pages[0] : conditionalPage}
+      page={page}
+      authMessage={authMessage}
     />
   )
 }
 
-export default withAuthUser<StoryProps>()(Story)
+export default Story
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const stories = await getDocs(storiesCol)
+export const getServerSideProps = withAuthUserTokenSSR()(
+  async ({ params, AuthUser }) => {
+    if (!params?.id || typeof params.id !== 'string') {
+      return {
+        redirect: {
+          destination: '/',
+          permanent: false,
+        },
+      }
+    }
 
-  const paths = stories.docs.map((story) => ({
-    params: {
-      id: story.id,
-    },
-  }))
+    const storyData = await getStoryData(params.id)
+    if (storyData) {
+      const pageData = await getPageData(storyData, AuthUser, 1)
 
-  return {
-    paths,
-    fallback: false,
+      if (pageData) {
+        return {
+          props: {
+            story: storyData,
+            page: pageData,
+          },
+        }
+      }
+
+      return {
+        props: {
+          story: storyData,
+          authMessage: '閲覧できません',
+        },
+      }
+    }
+
+    // 小説データが取得できない場合はトップに飛ばす
+    return {
+      redirect: {
+        destination: `/stories/`,
+        permanent: false,
+      },
+    }
   }
-}
-
-type PageParams = {
-  id: string
-}
-
-export const getStaticProps = async (
-  context: GetStaticPropsContext<PageParams>
-): Promise<GetStaticPropsResult<StoryProps>> => {
-  const docSnap = await getDoc(
-    doc(
-      client,
-      'stories',
-      context?.params?.id.toString() || 'xxx'
-    ) as DocumentReference<StoryType>
-  )
-
-  const docData = docSnap.data()
-  if (!docData) {
-    throw new Error('story not found')
-  }
-
-  const story = {
-    ...docData,
-    id: docSnap.id,
-    timestamp: getTimestampString(docSnap),
-  }
-
-  const pageRef = collection(storiesCol, docSnap.id, 'pages')
-  const pageDocs = await getDocs(pageRef)
-
-  // 公開範囲がpublicの時だけページ内容を取得
-  const pages =
-    docData?.scope === 'public'
-      ? (pageDocs.docs.map((doc) => ({
-          ...doc.data(),
-          timestamp: getTimestampString(doc),
-        })) as Page[])
-      : null
-
-  return {
-    props: {
-      story,
-      pages,
-    },
-    revalidate: 10,
-  }
-}
+)

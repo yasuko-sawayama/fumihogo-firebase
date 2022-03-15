@@ -11,10 +11,12 @@ type Props = {
   author: User
   story: Story
   page?: Page | null
+  authMessage?: string | null
 }
 
-const StoryLayout: VFC<Props> = ({ author, story, page }) => {
+const StoryLayout: VFC<Props> = ({ author, story, page, authMessage }) => {
   const content = page?.content
+
   return (
     <>
       <Head>
@@ -32,10 +34,16 @@ const StoryLayout: VFC<Props> = ({ author, story, page }) => {
                 <div className="mx-auto max-w-6xl sm:px-6 lg:px-8">
                   <div className="px-4 py-0 sm:px-0">
                     <header>
-                      <PageHeading authorId={author.uid} {...story} />
+                      <PageHeading
+                        authorId={author.uid}
+                        {...story}
+                        pageNumber={page?.number}
+                      />
                     </header>
                     <main>
-                      {content ? (
+                      {authMessage ? (
+                        authMessage
+                      ) : content ? (
                         <PageContent content={content} />
                       ) : (
                         <Spinner />

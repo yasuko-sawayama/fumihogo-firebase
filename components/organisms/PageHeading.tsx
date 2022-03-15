@@ -1,6 +1,6 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { CalendarIcon, PencilAltIcon, PencilIcon } from '@heroicons/react/solid'
-import { useAuthUser } from 'next-firebase-auth'
+import { useAuthUser, withAuthUser } from 'next-firebase-auth'
 import Link from 'next/link'
 import { VFC } from 'react'
 import { Story } from '../../types'
@@ -8,6 +8,7 @@ import { R18, Scope, Title } from '../atoms/Headings'
 
 type Props = {
   authorId: string
+  pageNumber?: number
 } & Story
 
 const PageHeading: VFC<Props> = ({
@@ -18,6 +19,7 @@ const PageHeading: VFC<Props> = ({
   description,
   restriction,
   timestamp,
+  pageNumber,
 }) => {
   const user = useAuthUser()
 
@@ -55,16 +57,20 @@ const PageHeading: VFC<Props> = ({
                   次のページを書く
                 </button>
               </Link>
-              <button
-                type="button"
-                className="ml-2 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                <PencilAltIcon
-                  className="-ml-1 mr-2 h-5 w-5 text-gray-500"
-                  aria-hidden="true"
-                />
-                修正
-              </button>
+              {pageNumber && (
+                <Link href={`/stories/${id}/pages/${pageNumber}/edit`} passHref>
+                  <button
+                    type="button"
+                    className="ml-2 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  >
+                    <PencilAltIcon
+                      className="-ml-1 mr-2 h-5 w-5 text-gray-500"
+                      aria-hidden="true"
+                    />
+                    修正
+                  </button>
+                </Link>
+              )}
             </span>
           </div>
         )}
@@ -81,4 +87,4 @@ const PageHeading: VFC<Props> = ({
   )
 }
 
-export default PageHeading
+export default withAuthUser<Props>()(PageHeading)

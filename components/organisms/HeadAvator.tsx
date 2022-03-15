@@ -2,7 +2,6 @@
 import { MailIcon } from '@heroicons/react/outline'
 import { BookOpenIcon } from '@heroicons/react/solid'
 import Image from 'next/image'
-import Link from 'next/link'
 import { FC } from 'react'
 import { User } from '../../types'
 import HeadingsButton from '../atoms/Headings/HeadingsButton'
@@ -48,6 +47,7 @@ const HeadAvator: FC<Props> = ({ author }) => {
             <div className="justify-stretch mt-6 flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
               <HeadingsButton
                 text="作品一覧"
+                href="#"
                 icon={
                   <BookOpenIcon
                     className="-ml-1 mr-2 h-5 w-5 text-gray-400"
@@ -55,20 +55,17 @@ const HeadAvator: FC<Props> = ({ author }) => {
                   />
                 }
               />
-              <Link
+
+              <HeadingsButton
+                text="Twitter"
                 href={`https://twitter.com/${author.twitterScreenName}`}
-                passHref
-              >
-                <HeadingsButton
-                  text="Twitter"
-                  icon={
-                    <MailIcon
-                      className="-ml-1 mr-2 h-5 w-5 text-gray-400"
-                      aria-hidden="true"
-                    />
-                  }
-                />
-              </Link>
+                icon={
+                  <MailIcon
+                    className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+                    aria-hidden="true"
+                  />
+                }
+              />
             </div>
           </div>
         </div>
