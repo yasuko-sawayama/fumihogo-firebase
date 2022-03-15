@@ -38,7 +38,8 @@
         "@typescript-eslint"
       ],
       "extends": [
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+         "plugin:prettier/recommended"
       ],
       "rules": {
         "react/prop-types": "off",
