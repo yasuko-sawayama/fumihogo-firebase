@@ -2,6 +2,7 @@
 import { CalendarIcon, PencilAltIcon, PencilIcon } from '@heroicons/react/solid'
 import { useAuthUser } from 'next-firebase-auth'
 import Link from 'next/link'
+import { VFC } from 'react'
 import { Story } from '../../types'
 import { R18, Scope, Title } from '../atoms/Headings'
 
@@ -9,7 +10,7 @@ type Props = {
   authorId: string
 } & Story
 
-export default function PageHeading({
+const PageHeading: VFC<Props> = ({
   authorId,
   id,
   scope,
@@ -17,14 +18,14 @@ export default function PageHeading({
   description,
   restriction,
   timestamp,
-}: Props) {
+}) => {
   const user = useAuthUser()
 
   return (
     <>
       <div className="mt-10 lg:flex lg:items-center lg:justify-between">
         <div className="min-w-0 flex-1">
-          <Title title={title!} />
+          <Title title={title || ''} />
           <div className="mt-2 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
             {restriction && <R18 />}
             <Scope scope={scope} />
@@ -79,3 +80,5 @@ export default function PageHeading({
     </>
   )
 }
+
+export default PageHeading

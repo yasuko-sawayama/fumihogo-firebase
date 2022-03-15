@@ -1,5 +1,6 @@
 /* This example requires Tailwind CSS v2.0+ */
 import Head from 'next/head'
+import { VFC } from 'react'
 import 'react-toastify/dist/ReactToastify.css'
 import Title from '../atoms/Headings/Title'
 import Nav from '../molecurles/nav'
@@ -9,8 +10,7 @@ type Props = {
   headerButtons?: JSX.Element[] | null
   children: React.ReactNode
 }
-
-export default function Layout({ title, headerButtons, children }: Props) {
+const Layout: VFC<Props> = ({ title, headerButtons, children }) => {
   return (
     <>
       <Head>
@@ -44,3 +44,5 @@ export default function Layout({ title, headerButtons, children }: Props) {
     </>
   )
 }
+
+export default Layout

@@ -1,5 +1,5 @@
-import { forwardRef } from "react"
-import { FieldErrors, UseFormRegister } from "react-hook-form"
+import { forwardRef } from 'react'
+import { FieldErrors, UseFormRegister } from 'react-hook-form'
 import FormErrorText from './FormErrorText'
 import { FormValues } from './types'
 
@@ -8,7 +8,7 @@ const Input = forwardRef<
   {
     label: string
     type?: string
-    defaultValue?: any
+    defaultValue?: string | number
     autoComplete?: string
     errors: FieldErrors
   } & ReturnType<UseFormRegister<FormValues>>
@@ -47,6 +47,6 @@ const Input = forwardRef<
   )
 )
 
-Input.displayName = "Input"
+Input.displayName = 'Input'
 
 export default Input

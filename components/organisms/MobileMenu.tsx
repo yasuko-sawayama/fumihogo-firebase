@@ -1,9 +1,10 @@
 import { Disclosure } from '@headlessui/react'
+import { FC } from 'react'
 import { classNames } from '../../utils/common'
 import { navigation } from '../../utils/menuItems/navigation'
 import MobileProfile from './MobileProfile'
 
-const MobileMenu = () => {
+const MobileMenu: FC = () => {
   return (
     <Disclosure.Panel className="sm:hidden">
       <div className="space-y-1 pt-2 pb-3">

@@ -1,6 +1,5 @@
 import { getDocs, query, where } from 'firebase/firestore'
 import { withAuthUser, withAuthUserTokenSSR } from 'next-firebase-auth'
-import Link from 'next/link'
 import { VFC } from 'react'
 import { StoryLayout } from '../../../../../components/templates'
 import { pageSubCol } from '../../../../../firebase/clientApp'
@@ -13,26 +12,7 @@ type PageProps = {
   myStory: boolean
 }
 
-const Page: VFC<PageProps> = ({ story, story: { id }, page, myStory }) => {
-  const buttons = [
-    <Link href={`/stories/${id}/pages/{page.id}/edit`} key="edit" passHref>
-      <button
-        type="button"
-        className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-      >
-        TODO: 編集
-      </button>
-    </Link>,
-    <Link href={`/stories/${id}/pages/new`} key="publish" passHref>
-      <button
-        type="button"
-        className="ml-3 inline-flex items-center rounded-md border border-transparent bg-indigo-400 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:ring-offset-2"
-      >
-        新規ページ
-      </button>
-    </Link>,
-  ]
-
+const Page: VFC<PageProps> = ({ story, page }) => {
   return <StoryLayout author={story.author} story={story} page={page} />
 }
 

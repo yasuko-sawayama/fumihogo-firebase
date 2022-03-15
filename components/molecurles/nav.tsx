@@ -1,11 +1,12 @@
 import { Disclosure } from '@headlessui/react'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/solid'
 import Link from 'next/link'
+import { FC } from 'react'
 import { classNames } from '../../utils/common'
 import { navigation } from '../../utils/menuItems/navigation'
 import { MobileMenu, ProfileDropdown } from '../organisms'
 
-const Nav = () => {
+const Nav: FC = () => {
   return (
     <Disclosure as="nav" className="border-b border-gray-200 bg-white">
       {({ open }) => (

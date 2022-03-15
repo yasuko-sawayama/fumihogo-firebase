@@ -1,9 +1,10 @@
+import { ReactNode, VFC } from 'react'
 type Props = {
   title: string
-  children: React.ReactNode
+  children: ReactNode
 }
 
-const FieldSet = ({ title, children }: Props) => {
+const FieldSet: VFC<Props> = ({ title, children }) => {
   return (
     <fieldset className="mt-4">
       <legend className="text-base font-medium text-gray-900">{title}</legend>

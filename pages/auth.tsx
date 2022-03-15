@@ -1,9 +1,7 @@
-import { SignInScreen } from '../components/organisms';
+import { SignInScreen } from '../components/organisms'
 
 const Auth = () => {
-    return (
-      <SignInScreen />
-    )
+  return <SignInScreen />
 }
 
 export default Auth

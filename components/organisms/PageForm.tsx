@@ -1,3 +1,4 @@
+import { FC } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Page } from '../../types'
 import { Story } from '../../types/index'
@@ -16,11 +17,10 @@ type Props = {
   pageNumber: number
 }
 
-const PageForm = ({ onSubmit, storyInfo, pageNumber }: Props) => {
+const PageForm: FC<Props> = ({ onSubmit, storyInfo, pageNumber }) => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<Page>()
   return (

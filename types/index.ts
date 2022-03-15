@@ -14,23 +14,26 @@ export type Story = {
   author: Author
   scope: Scope
   description?: string
-  restriction: Boolean
+  restriction: boolean
   timestamp?: string
   totalPages: number
 }
 
-export type Author = {
-  uid: string
-  photoURL?: string | null
-  displayName?: string | null
-  twitterScreenName?: string
-}
+export type Author = User
 
 export type User = {
   uid: string
   photoURL?: string | null
   displayName?: string | null
+  twitterScreenName?: string | null
+}
+
+// 強引にキャストする用
+export type TwitterAuthUser = {
+  uid: string
+  photoURL?: string | null
+  displayName?: string | null
   reloadUserInfo?: {
-    screenName?: string | null
+    screenName: string
   }
 }

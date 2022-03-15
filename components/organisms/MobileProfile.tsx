@@ -2,9 +2,10 @@ import { Disclosure } from '@headlessui/react'
 import { BellIcon } from '@heroicons/react/outline'
 import { useAuthUser } from 'next-firebase-auth'
 import Image from 'next/image'
+import { FC } from 'react'
 import { userNavigation } from '../../utils/menuItems/userNaviigation'
 
-const MobileProfile = () => {
+const MobileProfile: FC = () => {
   const user = useAuthUser()
 
   if (user.id) {

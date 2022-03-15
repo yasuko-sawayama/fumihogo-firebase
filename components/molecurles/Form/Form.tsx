@@ -1,9 +1,9 @@
-import { ReactNode } from 'react'
+import { ReactNode, VFC } from 'react'
 type Props = {
-  onSubmit: any //FIXME
+  onSubmit: VoidFunction
   children: ReactNode
 }
-const Form = ({ onSubmit, children }: Props) => {
+const Form: VFC<Props> = ({ onSubmit, children }) => {
   return (
     <form className="space-y-8 divide-y divide-gray-200 " onSubmit={onSubmit}>
       <div className="space-y-8 divide-y divide-gray-200">{children}</div>

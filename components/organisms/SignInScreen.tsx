@@ -1,16 +1,17 @@
 import { signInWithRedirect, TwitterAuthProvider } from 'firebase/auth'
 import { withAuthUser } from 'next-firebase-auth'
 import Image from 'next/image'
+import { FC } from 'react'
 import { auth } from '../../firebase/clientApp'
 import useUser from '../../hooks/useUser'
 
-function SignInScreen() {
+const SignInScreen: FC = () => {
   const user = useUser({ redirectTo: '/stories', redirectIfFound: true })
 
   const provider = new TwitterAuthProvider()
   auth.languageCode = 'ja'
 
-  const signIn = () => {
+  const signIn = (): void => {
     signInWithRedirect(auth, provider)
   }
 

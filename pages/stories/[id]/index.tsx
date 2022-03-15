@@ -23,11 +23,7 @@ type StoryProps = {
   pages: Page[] | null
 }
 
-const Story: VFC<StoryProps> = ({
-  story,
-  story: { id, scope, author },
-  pages,
-}) => {
+const Story: VFC<StoryProps> = ({ story, story: { scope, author }, pages }) => {
   const conditionalPage = usePage(story, 1)
 
   return (
@@ -71,7 +67,10 @@ export const getStaticProps = async (
     ) as DocumentReference<StoryType>
   )
 
-  const docData = docSnap.data()!
+  const docData = docSnap.data()
+  if (!docData) {
+    throw new Error('story not found')
+  }
 
   const story = {
     ...docData,

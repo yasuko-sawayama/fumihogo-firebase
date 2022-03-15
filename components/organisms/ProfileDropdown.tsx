@@ -2,11 +2,11 @@ import { Menu, Transition } from '@headlessui/react'
 import { useAuthUser, withAuthUser } from 'next-firebase-auth'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Fragment } from 'react'
+import { FC, Fragment } from 'react'
 import { classNames } from '../../utils/common'
 import { userNavigation } from '../../utils/menuItems/userNaviigation'
 
-const ProfileDropdown = () => {
+const ProfileDropdown: FC = () => {
   const user = useAuthUser()
 
   if (user.id) {

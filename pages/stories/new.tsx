@@ -14,7 +14,8 @@ import {
 } from '../../components/molecurles/Form'
 import Layout from '../../components/templates/Layout'
 import { storiesCol } from '../../firebase/clientApp'
-import { Page, Scope, User } from '../../types'
+import { Page, Scope } from '../../types'
+import { TwitterAuthUser } from '../../types/index'
 
 export interface INewStoryFormValues {
   title: string
@@ -28,14 +29,17 @@ const NewStory = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<INewStoryFormValues>()
   const user = useAuthUser()
   const router = useRouter()
 
   const onSubmit: SubmitHandler<INewStoryFormValues> = async (data) => {
-    const userId = user!.id!
+    console.log(user)
+
+    if (!user.id || !user.firebaseUser) {
+      throw new Error('user is required')
+    }
 
     const { page, ...storyInfo } = {
       ...data,
@@ -48,14 +52,14 @@ const NewStory = () => {
 
     try {
       // 取り方がわからないので無理矢理キャスト・・・
-      const firebaseUser: User = user.firebaseUser!
+      const firebaseUser: TwitterAuthUser = user.firebaseUser
 
       const docRef = await addDoc(storiesCol, {
         ...storyInfo,
-        userId,
+        userId: user.id,
         author: {
-          uid: userId,
-          displayName: user.displayName!,
+          uid: user.id,
+          displayName: user.displayName || '',
           photoURL: user.photoURL,
           // Twitterログインを前提とする
           twitterScreenName: firebaseUser?.reloadUserInfo?.screenName || '',

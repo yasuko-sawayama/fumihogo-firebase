@@ -6,7 +6,6 @@ import { storiesCol } from '../../firebase/clientApp'
 import { Story } from '../../types'
 import { getTimestampString } from '../../utils/common'
 
-
 type Props = {
   stories: Story[]
 }
