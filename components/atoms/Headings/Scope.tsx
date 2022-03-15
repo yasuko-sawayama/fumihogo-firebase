@@ -1,5 +1,5 @@
 import { LockClosedIcon, LockOpenIcon } from '@heroicons/react/solid'
-import { Scope } from '../../../types'
+import { Scope as ScopeType } from '../../../types'
 
 const scopeText = {
   public: '公開',
@@ -9,7 +9,7 @@ const scopeText = {
 }
 
 type Props = {
-  scope: Scope
+  scope: ScopeType
 }
 
 const Scope = ({ scope }: Props) => {

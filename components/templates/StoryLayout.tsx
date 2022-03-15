@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import { VFC } from 'react'
 import { Story, User } from '../../types'
 import { Page } from '../../types/index'
 import { Spinner } from '../atoms'
@@ -12,7 +13,7 @@ type Props = {
   page?: Page | null
 }
 
-const StoryLayout = ({ author, story, page }: Props) => {
+const StoryLayout: VFC<Props> = ({ author, story, page }) => {
   const content = page?.content
   return (
     <>
