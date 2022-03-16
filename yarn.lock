@@ -9001,6 +9001,11 @@ next-firebase-auth@^1.0.0-canary.7:
     cookies "^0.8.0"
     hoist-non-react-statics "^3.3.2"
 
+next-router-mock@^0.6.5:
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/next-router-mock/-/next-router-mock-0.6.5.tgz#46258e1921587a892e29a3052cb0daa2cc503185"
+  integrity sha512-gh6phWv4YUhFON0rWGmc02ni91m68ICG1HTj2N9bi2Y0MIlp5Z12QITXF4lNtV33wuMeUzrs/Ik6XyNOZ8rmNQ==
+
 next@latest:
   version "12.1.0"
   resolved "https://registry.yarnpkg.com/next/-/next-12.1.0.tgz#c33d753b644be92fc58e06e5a214f143da61dd5d"

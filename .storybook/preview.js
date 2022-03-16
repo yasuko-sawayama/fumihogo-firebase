@@ -1,3 +1,5 @@
+import { addDecorator } from '@storybook/react'
+import { MemoryRouterProvider } from 'next-router-mock/MemoryRouterProvider'
 import * as NextImage from 'next/image'
 import '../styles/globals.css'
 
@@ -20,3 +22,9 @@ export const parameters = {
     'storybook/docs/panel': { index: -1 },
   },
 }
+
+addDecorator((Story) => (
+  <MemoryRouterProvider>
+    <Story />
+  </MemoryRouterProvider>
+))
