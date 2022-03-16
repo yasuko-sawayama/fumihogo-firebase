@@ -1,7 +1,6 @@
 import { getDocs, query, setDoc, where } from 'firebase/firestore'
 import {
   AuthAction,
-  useAuthUser,
   withAuthUser,
   withAuthUserTokenSSR,
 } from 'next-firebase-auth'
@@ -27,7 +26,7 @@ const PageEdit: FC<Props> = ({ pageData, pageId }) => {
   const pageNumber = parseInt(page as string)
 
   const [storyInfo] = useStory(id as string)
-  const user = useAuthUser()
+  // const user = useAuthUser()
   const formData: Page = pageData
   const onSubmit: SubmitHandler<Page> = async (data) => {
     const storyId = id?.toString() || ''
@@ -83,7 +82,7 @@ export const getServerSideProps = withAuthUserTokenSSR()(
 
     if (storyData && storyData.userId === AuthUser.id) {
       const pageQuery = query(
-        pageSubCol(storyData.id),
+        pageSubCol(storyData?.id as string),
         where('number', '==', parseInt(`${params.page}`))
       )
 

@@ -30,7 +30,6 @@ const PageForm: FC<Props> = ({
     formState: { errors },
   } = useForm<Page>({ defaultValues })
 
-  console.log(defaultValues)
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <BasicInfoFieldsArea>

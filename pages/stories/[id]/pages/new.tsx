@@ -18,8 +18,7 @@ import { Spinner } from '../../../../components/atoms'
 import PageForm from '../../../../components/organisms/PageForm'
 import { Layout } from '../../../../components/templates'
 import { db } from '../../../../firebase/clientApp'
-import { Page } from '../../../../types'
-import { Story } from '../../../../types/index'
+import { Page, Story } from '../../../../types'
 import { getStoryData } from '../../../../utils/common'
 
 type Props = {

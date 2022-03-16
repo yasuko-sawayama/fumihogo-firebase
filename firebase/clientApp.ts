@@ -13,6 +13,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore'
 import { Page, Story } from '../types'
+import { getTimestampString } from '../utils/common'
 
 const clientCredentials = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -57,6 +58,10 @@ export const createCollection = <T = DocumentData>(collectionName: string) => {
   return collection(db, collectionName) as CollectionReference<T>
 }
 
+const createDoc = <T = DocumentData>(collectionName: string, docId: string) => {
+  return doc(db, collectionName, docId) as DocumentReference<T>
+}
+
 export const createSubCollection = <T = DocumentData>(
   parentCollectionName: string,
   parentId: string,
@@ -65,7 +70,23 @@ export const createSubCollection = <T = DocumentData>(
   return collection(db, parentCollectionName, parentId, collectionName)
 }
 
-export const storiesCol = createCollection<Story>('stories')
+const storyCoverter: FirestoreDataConverter<Story> = {
+  toFirestore: (data) => ({
+    ...data,
+    timestamp: serverTimestamp(),
+  }),
+  fromFirestore: (snap: QueryDocumentSnapshot, options): Story => ({
+    id: snap.id,
+    ...(snap.data(options) as Story),
+    timestamp: getTimestampString(snap),
+  }),
+}
+
+export const storiesCol =
+  createCollection<Story>('stories').withConverter(storyCoverter)
+
+export const storyDoc = (docId: string) =>
+  createDoc<Story>('stories', docId).withConverter(storyCoverter)
 
 const pageConverter: FirestoreDataConverter<Page> = {
   toFirestore: (data) => ({
@@ -76,7 +97,7 @@ const pageConverter: FirestoreDataConverter<Page> = {
     ...snap.data(options),
     content: snap.data().content || '',
     number: (snap.data().number as number) || 1,
-    timestamp: snap.data()?.timestamp?.toDate()?.toLocaleString('ja-JP') || '',
+    timestamp: getTimestampString(snap),
   }),
 }
 

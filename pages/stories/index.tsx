@@ -4,7 +4,6 @@ import { GetStaticProps } from 'next/types'
 import Layout from '../../components/templates/Layout'
 import { storiesCol } from '../../firebase/clientApp'
 import { Story } from '../../types'
-import { getTimestampString } from '../../utils/common'
 
 type Props = {
   stories: Story[]
@@ -31,11 +30,7 @@ export default StoriesIndex
 export const getStaticProps: GetStaticProps = async () => {
   const res = await getDocs(storiesCol)
 
-  const stories = res.docs.map((story) => ({
-    ...story.data(),
-    id: story.id,
-    timestamp: getTimestampString(story),
-  }))
+  const stories = res.docs.map((story) => story.data())
 
   return {
     props: {

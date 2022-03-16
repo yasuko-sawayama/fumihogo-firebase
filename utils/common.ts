@@ -1,5 +1,4 @@
 import {
-  doc,
   DocumentData,
   DocumentSnapshot,
   getDoc,
@@ -9,7 +8,7 @@ import {
   where,
 } from 'firebase/firestore'
 import { AuthUser } from 'next-firebase-auth'
-import { pageSubCol, storiesCol } from '../firebase/clientApp'
+import { pageSubCol, storyDoc } from '../firebase/clientApp'
 import { Story } from '../types'
 
 export function classNames(...classes: string[]) {
@@ -17,13 +16,9 @@ export function classNames(...classes: string[]) {
 }
 
 export const getStoryData = async (id: string) => {
-  const storySnapshot = await getDoc(doc(storiesCol, `${id}`))
+  const storySnapshot = await getDoc(storyDoc(id))
   if (storySnapshot.exists()) {
-    const storyData = {
-      id: storySnapshot.id,
-      ...storySnapshot.data(),
-      timestamp: getTimestampString(storySnapshot),
-    }
+    const storyData = storySnapshot.data()
 
     return storyData
   }
