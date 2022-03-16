@@ -1,5 +1,6 @@
 import {
   doc,
+  DocumentData,
   DocumentSnapshot,
   getDoc,
   getDocs,
@@ -57,15 +58,14 @@ export const getPageData = async (
     const pageSnapshot = await getDocs(pageQuery)
     const pageData = pageSnapshot.docs[0]
 
-    if (pageData) {
+    if (pageData.exists()) {
       return {
         ...pageData.data(),
-        timestamp: getTimestampString(pageData),
       }
     }
   }
 }
 
 export const getTimestampString = (
-  doc: QueryDocumentSnapshot | DocumentSnapshot
+  doc: QueryDocumentSnapshot<DocumentData> | DocumentSnapshot
 ): string => doc.data()?.timestamp?.toDate()?.toLocaleString('ja-JP') || ''

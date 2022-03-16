@@ -15,14 +15,22 @@ type Props = {
   onSubmit: SubmitHandler<Page>
   storyInfo: Story
   pageNumber: number
+  defaultValues?: Page
 }
 
-const PageForm: FC<Props> = ({ onSubmit, storyInfo, pageNumber }) => {
+const PageForm: FC<Props> = ({
+  onSubmit,
+  storyInfo,
+  pageNumber,
+  defaultValues,
+}) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Page>()
+  } = useForm<Page>({ defaultValues })
+
+  console.log(defaultValues)
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <BasicInfoFieldsArea>

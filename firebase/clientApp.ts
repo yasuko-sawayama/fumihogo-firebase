@@ -4,12 +4,15 @@ import {
   collection,
   CollectionReference,
   connectFirestoreEmulator,
+  doc,
   DocumentData,
+  DocumentReference,
+  FirestoreDataConverter,
   getFirestore,
+  QueryDocumentSnapshot,
+  serverTimestamp,
 } from 'firebase/firestore'
 import { Page, Story } from '../types'
-/* import 'firebase/auth'
-import 'firebase/firestore' */
 
 const clientCredentials = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -63,5 +66,26 @@ export const createSubCollection = <T = DocumentData>(
 }
 
 export const storiesCol = createCollection<Story>('stories')
+
+const pageConverter: FirestoreDataConverter<Page> = {
+  toFirestore: (data) => ({
+    ...data,
+    timestamp: serverTimestamp(),
+  }),
+  fromFirestore: (snap: QueryDocumentSnapshot, options): Page => ({
+    ...snap.data(options),
+    content: snap.data().content || '',
+    number: (snap.data().number as number) || 1,
+    timestamp: snap.data()?.timestamp?.toDate()?.toLocaleString('ja-JP') || '',
+  }),
+}
+
+export const pageDoc = (parentId: string, pageId: string) =>
+  doc(db, 'stories', parentId, 'pages', pageId).withConverter(
+    pageConverter
+  ) as DocumentReference<Page>
+
 export const pageSubCol = (parentId: string) =>
-  createSubCollection<Page>('stories', parentId, 'pages')
+  createSubCollection<Page>('stories', parentId, 'pages').withConverter(
+    pageConverter
+  )

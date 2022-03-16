@@ -3,12 +3,15 @@ import { BellIcon } from '@heroicons/react/outline'
 import { useAuthUser } from 'next-firebase-auth'
 import Image from 'next/image'
 import { FC } from 'react'
+import { TwitterAuthUser } from '../../types/index'
 import { userNavigation } from '../../utils/menuItems/userNaviigation'
 
 const MobileProfile: FC = () => {
   const user = useAuthUser()
 
-  if (user.id) {
+  if (user.id && user.firebaseUser) {
+    const firebaseUser: TwitterAuthUser = user.firebaseUser
+
     return (
       <div className="border-t border-gray-200 pt-4 pb-3">
         <div className="flex items-center px-4">
@@ -26,10 +29,7 @@ const MobileProfile: FC = () => {
               {user.displayName}
             </div>
             <div className="text-sm font-medium text-gray-500">
-              {
-                user.firebaseUser?.reloadUserInfo?.providerUserInfo[0]
-                  ?.screenName
-              }
+              {firebaseUser?.reloadUserInfo?.screenName}
             </div>
           </div>
           <button
